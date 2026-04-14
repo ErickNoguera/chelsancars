@@ -1,0 +1,248 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #060706;
+  --secondary: #896B3E;
+  --accent: #FED42A;
+  --text: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --background: var(--primary);
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.1);
+  font-family: 'Montserrat', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(6, 7, 6, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  z-index: 1000;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+}
+
+.navbar-logo img {
+  height: 50px;
+  width: auto;
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 32px;
+}
+
+.navbar-links a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: var(--accent);
+}
+
+.navbar-cta {
+  background: var(--accent);
+  color: var(--primary) !important;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+/* Hero Section */
+.hero-section {
+  display: grid;
+  gap: 48px;
+  grid-template-columns: 1.4fr 1fr;
+  align-items: center;
+  padding: 120px 0 80px;
+  min-height: 100vh;
+}
+
+.hero-copy {
+  max-width: 650px;
+}
+
+.eyebrow {
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.hero-section h1 {
+  margin: 0 0 32px;
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.hero-section p {
+  margin: 0 0 40px;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.hero-button {
+  display: inline-block;
+  padding: 16px 32px;
+  background: var(--accent);
+  color: var(--primary);
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(254, 212, 42, 0.3);
+}
+
+.hero-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(254, 212, 42, 0.4);
+}
+
+.hero-image {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.hero-card h3 {
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.hero-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* Sections */
+.services-section,
+.contact-section {
+  padding: 80px 0;
+}
+
+.section-content {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 60px;
+  border-radius: 32px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.services-section h2,
+.contact-section h2 {
+  margin: 0 0 24px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.services-section p,
+.contact-section p {
+  margin: 0 0 32px;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.services-section ul {
+  margin: 32px 0 0;
+  padding-left: 24px;
+}
+
+.services-section li {
+  margin-bottom: 16px;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.services-section li::marker {
+  color: var(--accent);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+    padding: 100px 0 60px;
+  }
+
+  .navbar-container {
+    padding: 0 16px;
+  }
+
+  .navbar-links {
+    gap: 20px;
+  }
+
+  .hero-card {
+    max-width: 100%;
+    padding: 32px;
+  }
+
+  .section-content {
+    padding: 40px 24px;
+  }
+
+  .services-section h2,
+  .contact-section h2 {
+    font-size: 2rem;
+  }
+}
