@@ -1,22 +1,21 @@
+import heroImage from '../assets/hero.jpg';
+
 function Hero() {
   return (
-    <section className="hero-section">
-      <div className="hero-copy">
-        <p className="eyebrow">Inspección de autos profesional</p>
-        <h1>Tu auto en manos seguras antes de comprar o vender</h1>
+    <section
+      className="hero-section"
+      style={{ backgroundImage: `linear-gradient(rgba(6, 7, 6, 0.45), rgba(6, 7, 6, 0.45)), url(${heroImage})` }}
+    >
+      <div className="hero-content">
+        <p className="eyebrow">Inspección de autos premium</p>
+        <h1>Tu auto inspeccionado con precisión y confianza</h1>
         <p>
-          Analizamos cada detalle del motor, la carrocería y el historial del vehículo para que tomes
-          decisiones con tranquilidad.
+          Evaluaciones completas con recomendaciones claras para que cada viaje sea seguro y tu
+          inversión esté protegida.
         </p>
         <a className="hero-button" href="#contacto">
           Solicitar inspección
         </a>
-      </div>
-      <div className="hero-image">
-        <div className="hero-card">
-          <h3>Informe claro</h3>
-          <p>Resultados precisos y recomendaciones finales en un documento listo para usar.</p>
-        </div>
       </div>
     </section>
   );
