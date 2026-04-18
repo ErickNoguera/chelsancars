@@ -3,6 +3,7 @@ import Hero from './components/Hero.jsx';
 import Footer from './components/Footer.jsx';
 import serviceImage from './assets/service.jpg';
 import inspectionImage from './assets/inspection.jpg';
+import InspectionReport from './components/InspectionReport';
 
 function App() {
   return (
@@ -73,6 +74,7 @@ function App() {
           </div>
         </div>
       </section>
+      <InspectionReport />
       <Footer />
     </>
   );

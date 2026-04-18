@@ -201,6 +201,92 @@
   text-align: right;
 }
 
+/* Contenedor de IA para textareas */
+.textarea-ai-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: var(--spacing-sm);
+  gap: var(--spacing-sm);
+}
+
+/* Botón de mejora IA */
+.btn-ai-improve {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-secondary-light);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.btn-ai-improve:hover:not(:disabled) {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.btn-ai-improve:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Sugerencia compacta de IA */
+.ai-suggestion-compact {
+  border: 1px solid var(--color-primary-light);
+  background: #f0f9ff;
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+  max-width: 100%;
+}
+
+.suggestion-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: var(--spacing-sm);
+}
+
+.suggestion-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+}
+
+/* Botones de sugerencia */
+.btn-suggestion {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-use {
+  background: var(--color-success);
+  color: white;
+}
+
+.btn-use:hover {
+  background: #059669;
+}
+
+.btn-cancel {
+  background: var(--color-text-secondary);
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: var(--color-text-primary);
+}
+
 /* Botones de acción */
 .form-actions {
   display: flex;

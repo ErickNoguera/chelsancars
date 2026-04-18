@@ -98,6 +98,8 @@ export default function InspectionReport() {
     }));
   };
 
+  const [aiSuggestions, setAiSuggestions] = useState({});
+
   const handleTextareaChange = (e) => {
     const { name, value } = e.target;
 
@@ -111,17 +113,128 @@ export default function InspectionReport() {
         ...prev,
         [name]: value.length
       }));
+
+      // Ocultar sugerencia si el usuario edita el texto
+      setAiSuggestions(prev => ({
+        ...prev,
+        [name]: {
+          ...(prev[name] || {}),
+          showPreview: false,
+        },
+      }));
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Datos del formulario:', formData);
-    // Aquí irá la lógica para enviar al backend
-    alert('Formulario preparado. Ver consola para datos.');
+  const updateAiSuggestion = (name, updates) => {
+    setAiSuggestions(prev => ({
+      ...prev,
+      [name]: {
+        ...(prev[name] || { loading: false, suggestion: '', showPreview: false }),
+        ...updates,
+      },
+    }));
+  };
+
+  // Función mock para mejorar texto (simula llamada a API)
+  const mockImproveText = (text) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const baseText = text.trim()
+          ? `Este vehículo presenta ${text.trim().toLowerCase()}`
+          : 'Este vehículo presenta una evaluación clara y profesional de sus condiciones actuales';
+        resolve(`${baseText}. Se recomienda revisar los detalles específicos y mantener un seguimiento periódico de las observaciones.`);
+      }, 700);
+    });
+  };
+
+  const handleImproveText = async (fieldName) => {
+    const originalText = formData[fieldName] || '';
+    updateAiSuggestion(fieldName, {
+      loading: true,
+      showPreview: false,
+      suggestion: '',
+    });
+
+    const suggestion = await mockImproveText(originalText);
+
+    updateAiSuggestion(fieldName, {
+      loading: false,
+      suggestion,
+      showPreview: true,
+    });
+  };
+
+  const handleUseSuggestion = (fieldName) => {
+    const suggestionText = aiSuggestions[fieldName]?.suggestion || '';
+    if (!suggestionText) return;
+
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: suggestionText,
+    }));
+
+    setCharCount(prev => ({
+      ...prev,
+      [fieldName]: suggestionText.length,
+    }));
+
+    updateAiSuggestion(fieldName, {
+      showPreview: false,
+    });
+  };
+
+  const handleCancelSuggestion = (fieldName) => {
+    updateAiSuggestion(fieldName, {
+      showPreview: false,
+      suggestion: '',
+    });
+  };
+
+  const renderAiSuggestion = (fieldName) => {
+    const state = aiSuggestions[fieldName] || {};
+
+    return (
+      <div className="textarea-ai-container">
+        <button
+          type="button"
+          className="btn-ai-improve"
+          onClick={() => handleImproveText(fieldName)}
+          disabled={state.loading}
+          title="Mejorar texto con IA"
+        >
+          {state.loading ? 'Mejorando...' : '✨ Mejorar'}
+        </button>
+
+        {state.showPreview && state.suggestion && (
+          <div className="ai-suggestion-compact">
+            <div className="suggestion-text">
+              <strong>Texto sugerido:</strong><br />
+              {state.suggestion}
+            </div>
+            <div className="suggestion-actions">
+              <button
+                type="button"
+                className="btn-suggestion btn-use"
+                onClick={() => handleUseSuggestion(fieldName)}
+              >
+                Usar
+              </button>
+              <button
+                type="button"
+                className="btn-suggestion btn-cancel"
+                onClick={() => handleCancelSuggestion(fieldName)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   const handleReset = () => {
+    
     setFormData({
       clientName: '',
       clientPhone: '',
@@ -194,6 +307,14 @@ export default function InspectionReport() {
       finalObservations: 0,
     });
   };
+  const handleSubmit = (e) => {
+  e.preventDefault();
+  console.log(formData);
+    // Simular guardado
+  localStorage.setItem('inspectionReport', JSON.stringify(formData));
+
+  alert('Informe guardado correctamente ✅');
+};
 
   return (
     <div className="inspection-report-container">
@@ -388,6 +509,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.registrationObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('registrationObservations')}
             </div>
 
             <div className="form-group">
@@ -403,6 +525,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.documentsObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('documentsObservations')}
             </div>
           </div>
         </section>
@@ -507,6 +630,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.engineObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('engineObservations')}
             </div>
 
             <div className="form-group">
@@ -522,6 +646,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.transmissionObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('transmissionObservations')}
             </div>
 
             <div className="form-group">
@@ -537,6 +662,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.brakesObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('brakesObservations')}
             </div>
 
             <div className="form-group">
@@ -552,6 +678,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.suspensionObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('suspensionObservations')}
             </div>
 
             <div className="form-group">
@@ -567,6 +694,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.coolantObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('coolantObservations')}
             </div>
           </div>
         </section>
@@ -618,6 +746,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.scannerObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('scannerObservations')}
             </div>
           </div>
         </section>
@@ -706,6 +835,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.paintObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('paintObservations')}
             </div>
 
             <div className="form-group">
@@ -721,6 +851,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.rustObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('rustObservations')}
             </div>
 
             <div className="form-group">
@@ -736,6 +867,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.glassObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('glassObservations')}
             </div>
 
             <div className="form-group">
@@ -751,6 +883,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.lightsObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('lightsObservations')}
             </div>
           </div>
         </section>
@@ -839,6 +972,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.upholsteryObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('upholsteryObservations')}
             </div>
 
             <div className="form-group">
@@ -854,6 +988,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.dashboardObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('dashboardObservations')}
             </div>
 
             <div className="form-group">
@@ -869,6 +1004,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.electricalObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('electricalObservations')}
             </div>
 
             <div className="form-group">
@@ -884,6 +1020,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.airconditioningObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('airconditioningObservations')}
             </div>
           </div>
         </section>
@@ -924,6 +1061,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.recommendedRepairs}/800 caracteres
               </div>
+              {renderAiSuggestion('recommendedRepairs')}
             </div>
 
             <div className="form-group">
@@ -939,6 +1077,7 @@ export default function InspectionReport() {
               <div className="char-counter">
                 {charCount.finalObservations}/800 caracteres
               </div>
+              {renderAiSuggestion('finalObservations')}
             </div>
           </div>
         </section>
