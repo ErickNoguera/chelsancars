@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
 import '../styles/InspectionReport.css';
 
 export default function InspectionReport() {
@@ -99,6 +100,32 @@ export default function InspectionReport() {
   };
 
   const [aiSuggestions, setAiSuggestions] = useState({});
+
+  // Cargar datos guardados en localStorage al montar el componente
+  useEffect(() => {
+    const savedData = localStorage.getItem('inspectionFormData');
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        setFormData(parsedData);
+        // Actualizar contadores de caracteres
+        const newCharCount = {};
+        Object.keys(parsedData).forEach(key => {
+          if (typeof parsedData[key] === 'string') {
+            newCharCount[key] = parsedData[key].length;
+          }
+        });
+        setCharCount(prev => ({ ...prev, ...newCharCount }));
+      } catch (error) {
+        console.error('Error al cargar datos de localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Guardar automáticamente formData en localStorage cuando cambie
+  useEffect(() => {
+    localStorage.setItem('inspectionFormData', JSON.stringify(formData));
+  }, [formData]);
 
   const handleTextareaChange = (e) => {
     const { name, value } = e.target;
@@ -306,6 +333,8 @@ export default function InspectionReport() {
       recommendedRepairs: 0,
       finalObservations: 0,
     });
+    // Limpiar datos del localStorage
+    localStorage.removeItem('inspectionFormData');
   };
   const handleSubmit = (e) => {
   e.preventDefault();
@@ -315,6 +344,79 @@ export default function InspectionReport() {
 
   alert('Informe guardado correctamente ✅');
 };
+
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    let yPosition = 20;
+
+    // Título
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Informe de Inspección Vehicular', 20, yPosition);
+    yPosition += 20;
+
+    // Función auxiliar para agregar texto con saltos de línea
+    const addText = (text, fontSize = 12, fontWeight = 'normal') => {
+      doc.setFontSize(fontSize);
+      doc.setFont('helvetica', fontWeight);
+      const lines = doc.splitTextToSize(text, 170);
+      doc.text(lines, 20, yPosition);
+      yPosition += lines.length * 5 + 5;
+    };
+
+    // Función para agregar sección
+    const addSection = (title, content) => {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text(title, 20, yPosition);
+      yPosition += 10;
+      addText(content, 12, 'normal');
+      yPosition += 10;
+    };
+
+    // Datos del Cliente
+    addSection('Datos del Cliente', 
+      `Nombre: ${formData.clientName}\nTeléfono: ${formData.clientPhone}\nCorreo: ${formData.clientEmail}`);
+
+    // Datos del Vehículo
+    addSection('Datos del Vehículo', 
+      `Marca: ${formData.vehicleMake}\nModelo: ${formData.vehicleModel}\nAño: ${formData.vehicleYear}\nPlaca: ${formData.licensePlate}\nVIN: ${formData.vin}\nKilometraje: ${formData.mileage}\nFecha de Inspección: ${formData.inspectionDate}`);
+
+    // Verificación Legal
+    addSection('Verificación Legal', 
+      `Estado de Matrícula: ${formData.registrationStatus}\nObservaciones: ${formData.registrationObservations}\nEstado de Documentos: ${formData.documentsStatus}\nObservaciones: ${formData.documentsObservations}`);
+
+    // Inspección Mecánica
+    addSection('Inspección Mecánica', 
+      `Motor - Estado: ${formData.engineStatus}\nObservaciones: ${formData.engineObservations}\nTransmisión - Estado: ${formData.transmissionStatus}\nObservaciones: ${formData.transmissionObservations}\nFrenos - Estado: ${formData.brakesStatus}\nObservaciones: ${formData.brakesObservations}\nSuspensión - Estado: ${formData.suspensionStatus}\nObservaciones: ${formData.suspensionObservations}\nRefrigeración - Estado: ${formData.coolantStatus}\nObservaciones: ${formData.coolantObservations}`);
+
+    // Scanner
+    addSection('Scanner', 
+      `Estado: ${formData.scannerStatus}\nCódigos Detectados: ${formData.codesDetected}\nObservaciones: ${formData.scannerObservations}`);
+
+    // Carrocería
+    addSection('Carrocería', 
+      `Pintura - Condición: ${formData.paintCondition}\nObservaciones: ${formData.paintObservations}\nÓxido - Presencia: ${formData.rustPresence}\nObservaciones: ${formData.rustObservations}\nVidrios - Condición: ${formData.glassCondition}\nObservaciones: ${formData.glassObservations}\nLuces - Estado: ${formData.lightsStatus}\nObservaciones: ${formData.lightsObservations}`);
+
+    // Interior
+    addSection('Interior', 
+      `Tapicería - Condición: ${formData.upholsteryCondition}\nObservaciones: ${formData.upholsteryObservations}\nTablero - Estado: ${formData.dashboardStatus}\nObservaciones: ${formData.dashboardObservations}\nEléctrico - Estado: ${formData.electricalStatus}\nObservaciones: ${formData.electricalObservations}\nAire Acondicionado - Estado: ${formData.airconditioningStatus}\nObservaciones: ${formData.airconditioningObservations}`);
+
+    // Conclusión Final
+    addSection('Conclusión Final', 
+      `Estado General: ${formData.overallStatus}\nReparaciones Recomendadas: ${formData.recommendedRepairs}\nObservaciones Finales: ${formData.finalObservations}`);
+
+    // Firmas
+    addSection('Firmas', 
+      `Inspector: ${formData.inspectorName}\nFirma del Inspector: ${formData.inspectorSignature}\nFirma del Cliente: ${formData.clientSignature}`);
+
+    // Guardar el PDF
+    doc.save('informe-inspeccion.pdf');
+  };
 
   return (
     <div className="inspection-report-container">
@@ -1132,6 +1234,9 @@ export default function InspectionReport() {
         <div className="form-actions">
           <button type="submit" className="btn btn-primary">
             Guardar Informe
+          </button>
+          <button type="button" className="btn btn-success" onClick={handleDownloadPDF}>
+            Descargar PDF
           </button>
           <button type="reset" className="btn btn-secondary" onClick={handleReset}>
             Limpiar Formulario
