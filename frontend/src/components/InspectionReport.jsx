@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
+import logo from '../assets/logo.png';
 import '../styles/InspectionReport.css';
 
 export default function InspectionReport() {
@@ -36,8 +37,9 @@ export default function InspectionReport() {
 
     // Scanner
     scannerStatus: '',
-    scannerObservations: '',
     codesDetected: '',
+    scannerObservations: '',
+
 
     // Carrocería
     paintCondition: '',
@@ -347,72 +349,268 @@ export default function InspectionReport() {
 
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
-    let yPosition = 20;
+    let yPosition = 0;
 
-    // Título
-    doc.setFontSize(18);
+    // HEADER CON IDENTIDAD VISUAL Y SOMBRA
+    // Sombra simulada
+    doc.setFillColor(20, 20, 20);
+    doc.rect(0, 2, 210, 25, 'F');
+
+    // Header principal
+    doc.setFillColor(30, 30, 30);
+    doc.rect(0, 0, 210, 25, 'F');
+
+    // Logo con proporción correcta (2:1)
+    doc.addImage(logo, 'PNG', 10, 2.5, 40, 20);
+
+    // Título CHELSAN CARS más prominente
+    doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    doc.text('Informe de Inspección Vehicular', 20, yPosition);
-    yPosition += 20;
+    doc.setTextColor(255, 255, 255);
+    doc.text('CHELSAN CARS', 60, 14);
 
-    // Función auxiliar para agregar texto con saltos de línea
-    const addText = (text, fontSize = 12, fontWeight = 'normal') => {
-      doc.setFontSize(fontSize);
-      doc.setFont('helvetica', fontWeight);
-      const lines = doc.splitTextToSize(text, 170);
-      doc.text(lines, 20, yPosition);
-      yPosition += lines.length * 5 + 5;
+    // Subtítulo
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Informe de Inspección Vehicular', 60, 22);
+
+    // Fecha a la derecha
+    const currentDate = new Date().toLocaleDateString('es-ES');
+    const dateWidth = doc.getTextWidth(currentDate);
+    doc.text(currentDate, 200 - dateWidth, 15);
+
+    yPosition = 35;
+
+    // TARJETA RESUMEN
+    // Sombra simulada
+    doc.setFillColor(200, 200, 200);
+    doc.roundedRect(15, yPosition + 1, 180, 36, 3, 3, 'F');
+
+    // Caja principal
+    doc.setFillColor(240, 240, 240);
+    doc.roundedRect(15, yPosition, 180, 36, 3, 3, 'F');
+
+    // Contenido en 2 columnas
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Cliente:', 25, yPosition + 8);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formData.clientName || 'No especificado', 45, yPosition + 8);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Teléfono:', 25, yPosition + 15);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formData.clientPhone || 'No especificado', 45, yPosition + 15);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('VIN:', 25, yPosition + 22);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formData.vin || 'No especificado', 45, yPosition + 22);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Vehículo:', 110, yPosition + 8);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`${formData.vehicleMake || ''} ${formData.vehicleModel || ''}`.trim() || 'No especificado', 130, yPosition + 8);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Año:', 110, yPosition + 15);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formData.vehicleYear || 'No especificado', 130, yPosition + 15);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Kilometraje:', 110, yPosition + 22);
+    doc.setFont('helvetica', 'normal');
+    const kmFormatted = formData.mileage ? `${parseInt(formData.mileage).toLocaleString('es-ES')} KMS` : 'No especificado';
+    doc.text(kmFormatted, 130, yPosition + 22);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Patente:', 110, yPosition + 29);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formData.licensePlate || 'No especificada', 130, yPosition + 29);
+
+    yPosition += 60;
+
+    // Función para interpolar color (gradiente)
+    const interpolateColor = (startHex, endHex, step, totalSteps) => {
+      const start = { r: 254, g: 212, b: 42 }; // #FED42A amarillo
+      const end = { r: 137, g: 107, b: 62 }; // #896B3E marrón
+      const ratio = step / totalSteps;
+      return {
+        r: Math.round(start.r + (end.r - start.r) * ratio),
+        g: Math.round(start.g + (end.g - start.g) * ratio),
+        b: Math.round(start.b + (end.b - start.b) * ratio)
+      };
     };
 
-    // Función para agregar sección
-    const addSection = (title, content) => {
-      if (yPosition > 250) {
+    // Función para dibujar sección como bloque mejorada
+    const drawSection = (title, items) => {
+      // Control de página
+      if (yPosition > 260) {
+        drawFooter();
         doc.addPage();
         yPosition = 20;
       }
-      doc.setFontSize(14);
+
+      // Título con degradado simulado amarillo a marrón y bordes redondeados
+      const titleHeight = 10;
+      const titleRadius = 3;
+      
+      // Dibujar degradado
+      for (let i = 0; i < titleHeight; i++) {
+        const color = interpolateColor('#FED42A', '#896B3E', i, titleHeight);
+        doc.setFillColor(color.r, color.g, color.b);
+        doc.rect(20, yPosition + i, 170, 1, 'F');
+      }
+      
+      // Simular borde redondeado con trazo
+      doc.setDrawColor(137, 107, 62);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(20, yPosition, 170, titleHeight, titleRadius, titleRadius);
+
+      doc.setTextColor(20, 20, 20);
+      doc.setFontSize(12);
       doc.setFont('helvetica', 'bold');
-      doc.text(title, 20, yPosition);
-      yPosition += 10;
-      addText(content, 12, 'normal');
-      yPosition += 10;
+      doc.text(title, 105, yPosition + 6.5, { align: 'center' });
+
+      yPosition += 12;
+      yPosition += 8; // Padding entre título y contenido
+
+      // Contenido
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(10);
+
+      items.forEach(item => {
+        // Calcular altura TOTAL del bloque ANTES de renderizar
+        let blockHeight = 7; // Label + value
+        let observationHeight = 0;
+        
+        if (item.observation && item.observation.trim()) {
+          const textWidth = 160;
+          const lines = doc.splitTextToSize(item.observation, textWidth);
+          const textHeight = lines.length * 4;
+          observationHeight = textHeight + 12; // Caja + padding
+          blockHeight += observationHeight + 3; // Separación
+        } else {
+          blockHeight += 3;
+        }
+        
+        // Verificar salto de página ANTES de renderizar cualquier parte
+        if (yPosition + blockHeight > 270) {
+          drawFooter();
+          doc.addPage();
+          yPosition = 20;
+        }
+        
+        // Label: Value
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'bold');
+        doc.text(item.label + ':', 25, yPosition);
+        doc.setFont('helvetica', 'normal');
+        doc.text(item.value, 70, yPosition);
+        yPosition += 7;
+
+        // Observación si existe
+        if (item.observation && item.observation.trim()) {
+          const textWidth = 160;
+          const lines = doc.splitTextToSize(item.observation, textWidth);
+          const textHeight = lines.length * 4;
+          const boxHeight = textHeight + 10; // padding mejorado
+
+          // Sombra
+          doc.setFillColor(220, 220, 220);
+          doc.roundedRect(20, yPosition + 1, 170, boxHeight, 3, 3, 'F');
+
+          // Caja principal
+          doc.setFillColor(245, 245, 245);
+          doc.roundedRect(20, yPosition, 170, boxHeight, 3, 3, 'F');
+
+          doc.setFontSize(9);
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(0, 0, 0);
+          doc.text(lines, 25, yPosition + 5);
+
+          yPosition += boxHeight + 10;
+        } else {
+          yPosition += 3; // Espacio mínimo
+        }
+      });
+
+      yPosition += 12; // Espacio entre secciones
     };
 
-    // Datos del Cliente
-    addSection('Datos del Cliente', 
-      `Nombre: ${formData.clientName}\nTeléfono: ${formData.clientPhone}\nCorreo: ${formData.clientEmail}`);
+    // Función para footer
+    const drawFooter = () => {
+      const footerY = 285;
+      doc.setDrawColor(200, 200, 200);
+      doc.line(15, footerY, 195, footerY);
 
-    // Datos del Vehículo
-    addSection('Datos del Vehículo', 
-      `Marca: ${formData.vehicleMake}\nModelo: ${formData.vehicleModel}\nAño: ${formData.vehicleYear}\nPlaca: ${formData.licensePlate}\nVIN: ${formData.vin}\nKilometraje: ${formData.mileage}\nFecha de Inspección: ${formData.inspectionDate}`);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100, 100, 100);
+      const footerText = 'CHELSAN CARS - Informe generado automáticamente';
+      const footerWidth = doc.getTextWidth(footerText);
+      doc.text(footerText, (210 - footerWidth) / 2, footerY + 5);
+    };
 
-    // Verificación Legal
-    addSection('Verificación Legal', 
-      `Estado de Matrícula: ${formData.registrationStatus}\nObservaciones: ${formData.registrationObservations}\nEstado de Documentos: ${formData.documentsStatus}\nObservaciones: ${formData.documentsObservations}`);
+    // SECCIONES con nueva estructura
+    drawSection('VERIFICACIÓN LEGAL', [
+      { label: 'Estado Matrícula', value: formData.registrationStatus || 'No evaluado', observation: formData.registrationObservations },
+      { label: 'Estado Documentos', value: formData.documentsStatus || 'No evaluado', observation: formData.documentsObservations }
+    ]);
 
-    // Inspección Mecánica
-    addSection('Inspección Mecánica', 
-      `Motor - Estado: ${formData.engineStatus}\nObservaciones: ${formData.engineObservations}\nTransmisión - Estado: ${formData.transmissionStatus}\nObservaciones: ${formData.transmissionObservations}\nFrenos - Estado: ${formData.brakesStatus}\nObservaciones: ${formData.brakesObservations}\nSuspensión - Estado: ${formData.suspensionStatus}\nObservaciones: ${formData.suspensionObservations}\nRefrigeración - Estado: ${formData.coolantStatus}\nObservaciones: ${formData.coolantObservations}`);
+    drawSection('INSPECCIÓN MECÁNICA', [
+      { label: 'Motor', value: formData.engineStatus || 'No evaluado', observation: formData.engineObservations },
+      { label: 'Transmisión', value: formData.transmissionStatus || 'No evaluado', observation: formData.transmissionObservations },
+      { label: 'Frenos', value: formData.brakesStatus || 'No evaluado', observation: formData.brakesObservations },
+      { label: 'Suspensión', value: formData.suspensionStatus || 'No evaluado', observation: formData.suspensionObservations },
+      { label: 'Refrigeración', value: formData.coolantStatus || 'No evaluado', observation: formData.coolantObservations }
+    ]);
 
-    // Scanner
-    addSection('Scanner', 
-      `Estado: ${formData.scannerStatus}\nCódigos Detectados: ${formData.codesDetected}\nObservaciones: ${formData.scannerObservations}`);
+    drawSection('SCANNER', [
+      { label: 'Estado', value: formData.scannerStatus || 'No evaluado' },
+      { label: 'Códigos Detectados', value: formData.codesDetected || 'Ninguno', observation: formData.scannerObservations }
+    ]);
 
-    // Carrocería
-    addSection('Carrocería', 
-      `Pintura - Condición: ${formData.paintCondition}\nObservaciones: ${formData.paintObservations}\nÓxido - Presencia: ${formData.rustPresence}\nObservaciones: ${formData.rustObservations}\nVidrios - Condición: ${formData.glassCondition}\nObservaciones: ${formData.glassObservations}\nLuces - Estado: ${formData.lightsStatus}\nObservaciones: ${formData.lightsObservations}`);
+    drawSection('CARROCERÍA', [
+      { label: 'Pintura', value: formData.paintCondition || 'No evaluado', observation: formData.paintObservations },
+      { label: 'Óxido', value: formData.rustPresence || 'No evaluado', observation: formData.rustObservations },
+      { label: 'Cristales', value: formData.glassCondition || 'No evaluado', observation: formData.glassObservations },
+      { label: 'Iluminación', value: formData.lightsStatus || 'No evaluado', observation: formData.lightsObservations }
+    ]);
 
-    // Interior
-    addSection('Interior', 
-      `Tapicería - Condición: ${formData.upholsteryCondition}\nObservaciones: ${formData.upholsteryObservations}\nTablero - Estado: ${formData.dashboardStatus}\nObservaciones: ${formData.dashboardObservations}\nEléctrico - Estado: ${formData.electricalStatus}\nObservaciones: ${formData.electricalObservations}\nAire Acondicionado - Estado: ${formData.airconditioningStatus}\nObservaciones: ${formData.airconditioningObservations}`);
+    drawSection('INTERIOR', [
+      { label: 'Tapizados', value: formData.upholsteryCondition || 'No evaluado', observation: formData.upholsteryObservations },
+      { label: 'Tablero', value: formData.dashboardStatus || 'No evaluado', observation: formData.dashboardObservations },
+      { label: 'Eléctricos', value: formData.electricalStatus || 'No evaluado', observation: formData.electricalObservations },
+      { label: 'Aire Acondicionado', value: formData.airconditioningStatus || 'No evaluado', observation: formData.airconditioningObservations }
+    ]);
 
-    // Conclusión Final
-    addSection('Conclusión Final', 
-      `Estado General: ${formData.overallStatus}\nReparaciones Recomendadas: ${formData.recommendedRepairs}\nObservaciones Finales: ${formData.finalObservations}`);
+    drawSection('CONCLUSIÓN FINAL', [
+      { label: 'Evaluación General', value: formData.overallStatus || 'No evaluado', observation: formData.recommendedRepairs },
+      { label: 'Observaciones Finales', value: '', observation: formData.finalObservations }
+    ]);
 
-    // Firmas
-    addSection('Firmas', 
-      `Inspector: ${formData.inspectorName}\nFirma del Inspector: ${formData.inspectorSignature}\nFirma del Cliente: ${formData.clientSignature}`);
+    // FIRMA
+    if (yPosition > 260) {
+      drawFooter();
+      doc.addPage();
+      yPosition = 20;
+    }
+
+    yPosition += 20;
+    doc.setDrawColor(0, 0, 0);
+    doc.line(60, yPosition, 150, yPosition);
+    yPosition += 10;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const inspectorName = formData.inspectorName || 'Inspector no especificado';
+    const nameWidth = doc.getTextWidth(inspectorName);
+    doc.text(inspectorName, (210 - nameWidth) / 2, yPosition);
+
+    // Footer final
+    drawFooter();
 
     // Guardar el PDF
     doc.save('informe-inspeccion.pdf');
@@ -884,9 +1082,9 @@ export default function InspectionReport() {
                 required
               >
                 <option value="">Seleccionar...</option>
-                <option value="Óptimo">Sin óxido</option>
-                <option value="Aceptable">Óxido superficial</option>
-                <option value="Deficiente">Óxido estructural</option>
+                <option value="Sin óxido">Sin óxido</option>
+                <option value="Óxido superficial">Óxido superficial</option>
+                <option value="Óxido estructural">Óxido estructural</option>
               </select>
             </div>
 
