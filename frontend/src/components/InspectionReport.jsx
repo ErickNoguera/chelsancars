@@ -411,23 +411,23 @@ export default function InspectionReport() {
     doc.setFont('helvetica', 'bold');
     doc.text('Vehículo:', 110, yPosition + 8);
     doc.setFont('helvetica', 'normal');
-    doc.text(`${formData.vehicleMake || ''} ${formData.vehicleModel || ''}`.trim() || 'No especificado', 130, yPosition + 8);
+    doc.text(`${formData.vehicleMake || ''} ${formData.vehicleModel || ''}`.trim() || 'No especificado', 135, yPosition + 8);
 
     doc.setFont('helvetica', 'bold');
     doc.text('Año:', 110, yPosition + 15);
     doc.setFont('helvetica', 'normal');
-    doc.text(formData.vehicleYear || 'No especificado', 130, yPosition + 15);
+    doc.text(formData.vehicleYear || 'No especificado', 135, yPosition + 15);
 
     doc.setFont('helvetica', 'bold');
     doc.text('Kilometraje:', 110, yPosition + 22);
     doc.setFont('helvetica', 'normal');
-    const kmFormatted = formData.mileage ? `${parseInt(formData.mileage).toLocaleString('es-ES')} KMS` : 'No especificado';
-    doc.text(kmFormatted, 130, yPosition + 22);
+    const kmFormatted = formData.mileage ? `${parseInt(formData.mileage).toLocaleString('es-ES')} Km` : 'No especificado';
+    doc.text(kmFormatted, 135, yPosition + 22);
 
     doc.setFont('helvetica', 'bold');
     doc.text('Patente:', 110, yPosition + 29);
     doc.setFont('helvetica', 'normal');
-    doc.text(formData.licensePlate || 'No especificada', 130, yPosition + 29);
+    doc.text(formData.licensePlate || 'No especificada', 135, yPosition + 29);
 
     yPosition += 60;
 
@@ -443,8 +443,27 @@ export default function InspectionReport() {
       };
     };
 
-    // Función para dibujar sección como bloque mejorada
+    // Función para dibujar sección con layout dinámico y seguro
     const drawSection = (title, items) => {
+      // === SISTEMA DE LAYOUT DINÁMICO ===
+      const marginLeft = 20;
+      const marginRight = 190;
+      const boxWidth = marginRight - marginLeft;
+      const padding = 5;
+      const textStartX = marginLeft + padding;
+      const maxTextWidth = boxWidth - (padding * 2);
+      const lineHeight = 4;
+      const labelValueHeight = 7;
+      const titleHeight = 10;
+      const titleRadius = 3;
+      const boxRadius = 3;
+      const spaceBetweenItems = 3;
+      const spaceAfterObservation = 10;
+      const paddingBetweenTitleAndContent = 8;
+      const spaceBetweenSections = 12;
+      const shadowOffset = 0.5;
+
+
       // Control de página
       if (yPosition > 260) {
         drawFooter();
@@ -453,90 +472,109 @@ export default function InspectionReport() {
       }
 
       // Título con degradado simulado amarillo a marrón y bordes redondeados
-      const titleHeight = 10;
-      const titleRadius = 3;
-      
       // Dibujar degradado
       for (let i = 0; i < titleHeight; i++) {
         const color = interpolateColor('#FED42A', '#896B3E', i, titleHeight);
         doc.setFillColor(color.r, color.g, color.b);
-        doc.rect(20, yPosition + i, 170, 1, 'F');
+        doc.rect(marginLeft, yPosition + i, boxWidth, 1, 'F');
       }
       
       // Simular borde redondeado con trazo
       doc.setDrawColor(137, 107, 62);
       doc.setLineWidth(0.3);
-      doc.roundedRect(20, yPosition, 170, titleHeight, titleRadius, titleRadius);
+      doc.roundedRect(marginLeft, yPosition, boxWidth, titleHeight, titleRadius, titleRadius);
 
       doc.setTextColor(20, 20, 20);
       doc.setFontSize(12);
       doc.setFont('helvetica', 'bold');
-      doc.text(title, 105, yPosition + 6.5, { align: 'center' });
+      const titleCenterX = marginLeft + boxWidth / 2;
+      doc.text(title, titleCenterX, yPosition + titleHeight / 2 + 2, { align: 'center' });
 
-      yPosition += 12;
-      yPosition += 8; // Padding entre título y contenido
+      yPosition += titleHeight;
+      yPosition += paddingBetweenTitleAndContent;
 
       // Contenido
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(10);
 
       items.forEach(item => {
-        // Calcular altura TOTAL del bloque ANTES de renderizar
-        let blockHeight = 7; // Label + value
-        let observationHeight = 0;
+        // === CÁLCULO DINÁMICO DE ALTURA DEL BLOQUE ===
+        let totalBlockHeight = 0;
         
+        // 1. Calcular altura de label + value
+        doc.setFont('helvetica', 'bold');
+        const labelText = item.label + ': ';
+        const labelWidth = doc.getTextWidth(labelText);
+        doc.setFont('helvetica', 'normal');
+        
+        const valueMaxWidth = maxTextWidth - labelWidth - 2;
+        const valueLines = valueMaxWidth > 20 ? doc.splitTextToSize(item.value, valueMaxWidth) : [item.value];
+        const valueHeight = valueLines.length * lineHeight;
+        
+        const labelValueBlockHeight = Math.max(labelValueHeight, valueHeight);
+        totalBlockHeight += labelValueBlockHeight;
+
+        // 2. Calcular altura de observación si existe
+        let observationBlockHeight = 0;
+        let observationLines = [];
         if (item.observation && item.observation.trim()) {
-          const textWidth = 160;
-          const lines = doc.splitTextToSize(item.observation, textWidth);
-          const textHeight = lines.length * 4;
-          observationHeight = textHeight + 12; // Caja + padding
-          blockHeight += observationHeight + 3; // Separación
+          observationLines = doc.splitTextToSize(item.observation, maxTextWidth);
+          const textHeight = observationLines.length * lineHeight;
+          observationBlockHeight = textHeight + (padding * 2);
+          totalBlockHeight += observationBlockHeight + spaceAfterObservation;
         } else {
-          blockHeight += 3;
+          totalBlockHeight += spaceBetweenItems;
         }
         
-        // Verificar salto de página ANTES de renderizar cualquier parte
-        if (yPosition + blockHeight > 270) {
+        // === VERIFICAR SALTO DE PÁGINA ANTES DE RENDERIZAR ===
+        if (yPosition + totalBlockHeight > 270) {
           drawFooter();
           doc.addPage();
           yPosition = 20;
         }
         
-        // Label: Value
+        // === RENDERIZAR LABEL + VALUE ===
         doc.setTextColor(0, 0, 0);
         doc.setFont('helvetica', 'bold');
-        doc.text(item.label + ':', 25, yPosition);
+        doc.text(labelText, textStartX, yPosition);
+        
         doc.setFont('helvetica', 'normal');
-        doc.text(item.value, 70, yPosition);
-        yPosition += 7;
+        doc.setFontSize(10);
+        
+        // Renderizar value (puede ser multiline)
+        if (valueLines.length === 1) {
+          doc.text(valueLines[0], textStartX + labelWidth + 2, yPosition);
+        } else {
+          // Si value ocupa múltiples líneas
+          doc.text(valueLines, textStartX + labelWidth + 2, yPosition);
+        }
+        
+        yPosition += labelValueBlockHeight;
 
-        // Observación si existe
+        // === RENDERIZAR OBSERVACIÓN SI EXISTE ===
         if (item.observation && item.observation.trim()) {
-          const textWidth = 160;
-          const lines = doc.splitTextToSize(item.observation, textWidth);
-          const textHeight = lines.length * 4;
-          const boxHeight = textHeight + 10; // padding mejorado
+          const boxHeight = observationBlockHeight;
 
           // Sombra
           doc.setFillColor(220, 220, 220);
-          doc.roundedRect(20, yPosition + 1, 170, boxHeight, 3, 3, 'F');
+          doc.roundedRect(marginLeft, yPosition + shadowOffset, boxWidth, boxHeight, boxRadius, boxRadius, 'F');
 
           // Caja principal
           doc.setFillColor(245, 245, 245);
-          doc.roundedRect(20, yPosition, 170, boxHeight, 3, 3, 'F');
+          doc.roundedRect(marginLeft, yPosition, boxWidth, boxHeight, boxRadius, boxRadius, 'F');
 
           doc.setFontSize(9);
           doc.setFont('helvetica', 'normal');
           doc.setTextColor(0, 0, 0);
-          doc.text(lines, 25, yPosition + 5);
+          doc.text(observationLines, textStartX, yPosition + padding + 2);
 
-          yPosition += boxHeight + 10;
+          yPosition += boxHeight + spaceAfterObservation;
         } else {
-          yPosition += 3; // Espacio mínimo
+          yPosition += spaceBetweenItems;
         }
       });
 
-      yPosition += 12; // Espacio entre secciones
+      yPosition += spaceBetweenSections;
     };
 
     // Función para footer
