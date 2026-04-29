@@ -20,6 +20,10 @@ const express = require("express");
 const cors = require("cors");
 const { testConnection, closePool } = require("./src/db");
 
+// ========== IMPORTAR RUTAS ==========
+const adminRoutes = require("./src/routes/admin.routes");
+const inspeccionRoutes = require("./src/routes/inspection.routes");
+
 // ========== PASO 3: OBTENER CONFIGURACIÓN ==========
 // Solo después de cargar dotenv podemos acceder a process.env
 const PORT = process.env.PORT || 3000;
@@ -45,9 +49,13 @@ app.get("/", (req, res) => {
   });
 });
 
-// Aquí irán las rutas principales cuando estén listas:
-// app.use("/api/admin", adminRoutes);
-// app.use("/api/inspection", inspectionRoutes);
+// ========== RUTAS ADMIN ==========
+// Autenticación y administración
+app.use("/admin", adminRoutes);
+
+// ========== RUTAS DE INSPECCIONES ==========
+// CRUD completo - requieren JWT (verifyToken aplicado dentro de las rutas)
+app.use("/api/inspections", inspeccionRoutes);
 
 // ========== PASO 7: MIDDLEWARE PARA RUTAS NO ENCONTRADAS ==========
 app.use((req, res) => {
