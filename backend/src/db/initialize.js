@@ -73,7 +73,7 @@ async function createInspectionsTable() {
       vehicle_model TEXT NOT NULL,
       vehicle_year INTEGER,
       
-      license_plate TEXT NOT NULL UNIQUE,
+      license_plate TEXT NOT NULL,
       
       vin TEXT,
       mileage INTEGER,

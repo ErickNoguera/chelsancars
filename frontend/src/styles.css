@@ -98,12 +98,31 @@ section {
   color: var(--accent);
 }
 
+.navbar-link-btn {
+  background: none;
+  border: none;
+  color: var(--background);
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.navbar-link-btn:hover {
+  color: var(--accent);
+}
+
 .navbar-cta {
   background: var(--accent);
   color: var(--text) !important;
   padding: 12px 20px;
   border-radius: 999px;
   font-weight: 700;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
   box-shadow: 0 12px 25px rgba(254, 212, 42, 0.22);
   transition: transform 0.25s ease, filter 0.25s ease;
 }
