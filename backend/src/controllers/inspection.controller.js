@@ -38,10 +38,6 @@ async function crear(req, res) {
       inspeccion: nuevaInspeccion,
     });
   } catch (error) {
-    // Patente duplicada
-    if (error.code === '23505') {
-      return res.status(409).json({ error: 'Ya existe una inspección con esa patente' });
-    }
     console.error('Error al crear inspección:', error.message);
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
@@ -150,9 +146,6 @@ async function actualizar(req, res) {
       inspeccion: actualizada,
     });
   } catch (error) {
-    if (error.code === '23505') {
-      return res.status(409).json({ error: 'Ya existe una inspección con esa patente' });
-    }
     console.error('Error al actualizar inspección:', error.message);
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
@@ -176,4 +169,29 @@ async function eliminar(req, res) {
   }
 }
 
-module.exports = { crear, listar, buscar, obtenerUna, actualizar, eliminar };
+// GET /api/inspections/publico?client=Juan&plate=ABC123
+// Ruta sin JWT: el cliente ingresa su nombre y la patente para descargar su informe
+async function buscarPublico(req, res) {
+  try {
+    const { client, plate } = req.query;
+
+    if (!client || !plate) {
+      return res.status(400).json({ error: 'Debes enviar tu nombre (client) y la patente del vehículo (plate).' });
+    }
+
+    const resultados = await inspeccionServicio.buscarPorClienteYPatente(client.trim(), plate.trim());
+
+    if (!resultados.length) {
+      return res.status(404).json({ error: 'No se encontró ningún informe con ese nombre y patente.' });
+    }
+
+    // Devuelve el más reciente con todos los campos (incluyendo data_json para generar el PDF)
+    const inspeccionCompleta = await inspeccionServicio.obtenerInspeccionPorId(resultados[0].id);
+    return res.status(200).json({ inspeccion: inspeccionCompleta });
+  } catch (error) {
+    console.error('Error en búsqueda pública:', error.message);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+}
+
+module.exports = { crear, listar, buscar, obtenerUna, actualizar, eliminar, buscarPublico };

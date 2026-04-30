@@ -421,3 +421,23 @@
 .form-section {
   animation: fadeIn 0.5s ease-out;
 }
+
+.form-mensaje {
+  margin: 0 0 1.5rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.form-mensaje--ok {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+.form-mensaje--error {
+  background: #fff3f3;
+  color: #c0392b;
+  border: 1px solid #f5c6cb;
+}

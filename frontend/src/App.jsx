@@ -1,14 +1,77 @@
+import { useState } from 'react';
 import Navbar from './components/Navbar.jsx';
 import Hero from './components/Hero.jsx';
 import Footer from './components/Footer.jsx';
+import LoginForm from './components/LoginForm.jsx';
+import InspectionReport from './components/InspectionReport.jsx';
+import DescargaPDFModal from './components/DescargaPDFModal.jsx';
 import serviceImage from './assets/service.jpg';
 import inspectionImage from './assets/inspection.jpg';
-import InspectionReport from './components/InspectionReport';
+
+// Verifica si hay un token JWT válido guardado en localStorage
+function tokenValido() {
+  const token = localStorage.getItem('token');
+  if (!token) return false;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+}
 
 function App() {
+  // 'landing' | 'login' | 'formulario'
+  const [vista, setVista] = useState('landing');
+  const [mostrarModalDescarga, setMostrarModalDescarga] = useState(false);
+
+  const handleCrearInforme = () => {
+    // Si ya tiene sesión activa, va directo al formulario
+    if (tokenValido()) {
+      setVista('formulario');
+    } else {
+      setVista('login');
+    }
+  };
+
+  const handleLoginExitoso = (token) => {
+    localStorage.setItem('token', token);
+    setVista('formulario');
+  };
+
+  const handleCerrarSesion = () => {
+    localStorage.removeItem('token');
+    setVista('landing');
+  };
+
+  // ===== VISTA: FORMULARIO DE INSPECCIÓN =====
+  if (vista === 'formulario') {
+    return (
+      <>
+        <Navbar modoFormulario onCerrarSesion={handleCerrarSesion} />
+        <InspectionReport onCerrarSesion={handleCerrarSesion} />
+      </>
+    );
+  }
+
+  // ===== VISTA: LOGIN =====
+  if (vista === 'login') {
+    return (
+      <LoginForm
+        onLoginExitoso={handleLoginExitoso}
+        onVolver={() => setVista('landing')}
+      />
+    );
+  }
+
+  // ===== VISTA: LANDING PAGE =====
   return (
     <>
-      <Navbar />
+      <Navbar
+        onCrearInforme={handleCrearInforme}
+        onDescargarInforme={() => setMostrarModalDescarga(true)}
+      />
+
       <Hero />
 
       <section id="servicios" className="feature-section">
@@ -56,7 +119,6 @@ function App() {
       </section>
 
       <section className="contact-section">
-        <div id="descargar" />
         <div id="contacto" className="contact-content">
           <div>
             <p className="eyebrow">Contacto</p>
@@ -66,7 +128,6 @@ function App() {
               Estamos listos para ayudarte con cualquier consulta.
             </p>
           </div>
-
           <div className="contact-details">
             <p><strong>Email:</strong> contacto@chelsancars.com</p>
             <p><strong>Teléfono:</strong> +54 9 11 1234 5678</p>
@@ -74,8 +135,12 @@ function App() {
           </div>
         </div>
       </section>
-      <InspectionReport />
+
       <Footer />
+
+      {mostrarModalDescarga && (
+        <DescargaPDFModal onCerrar={() => setMostrarModalDescarga(false)} />
+      )}
     </>
   );
 }

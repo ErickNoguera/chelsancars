@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import logo from '../assets/logo.png';
 
-function Navbar() {
+function Navbar({ onCrearInforme, onDescargarInforme, onCerrarSesion, modoFormulario }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -12,34 +12,62 @@ function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Cierra el menú al hacer click en un link
   const handleLinkClick = () => setMenuOpen(false);
 
-  // Bloquea el scroll del body cuando el menú está abierto
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
-  }, [menuOpen])
+  }, [menuOpen]);
 
+  // Modo formulario: solo muestra logo y botón de cerrar sesión
+  if (modoFormulario) {
+    return (
+      <nav className="navbar">
+        <div className="navbar-container">
+          <div className="navbar-logo">
+            <img src={logo} alt="Chelsan Cars Logo" />
+          </div>
+          <ul className="navbar-links">
+            <li>
+              <button className="navbar-cta" onClick={onCerrarSesion} style={{ cursor: 'pointer' }}>
+                Cerrar Sesión
+              </button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    );
+  }
+
+  // Modo landing: navegación completa
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isScrolled ? 'navbar--scrolled' : ''}`}>
       <div className="navbar-container">
         <div className="navbar-logo">
           <img src={logo} alt="Chelsan Cars Logo" />
         </div>
 
-        {/* Links — desktop */}
         <ul className={`navbar-links ${menuOpen ? 'navbar-links--open' : ''}`}>
           <li><a href="#servicios" onClick={handleLinkClick}>Servicios</a></li>
           <li><a href="#contacto" onClick={handleLinkClick}>Contacto</a></li>
           <li>
-            <a href="#descargar" className="navbar-cta" onClick={handleLinkClick}>
+            <button
+              className="navbar-link-btn"
+              onClick={() => { handleLinkClick(); onDescargarInforme?.(); }}
+            >
               Descargar Informe
-            </a>
+            </button>
+          </li>
+          <li>
+            <button
+              className="navbar-cta"
+              onClick={() => { handleLinkClick(); onCrearInforme?.(); }}
+            >
+              Crear Informe
+            </button>
           </li>
         </ul>
 
-        {/* Botón hamburguesa — solo mobile */}
         <button
           className={`navbar-hamburger ${menuOpen ? 'navbar-hamburger--open' : ''}`}
           onClick={() => setMenuOpen(!menuOpen)}
@@ -54,4 +82,5 @@ function Navbar() {
     </nav>
   );
 }
+
 export default Navbar;

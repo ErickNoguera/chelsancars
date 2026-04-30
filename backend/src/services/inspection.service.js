@@ -34,7 +34,22 @@ async function obtenerInspeccionPorId(id) {
   return resultado.rows[0] || null;
 }
 
-// Busca por patente (plate) o nombre de cliente (client)
+// Busca por nombre de cliente Y patente al mismo tiempo (para descarga pública)
+// Ambos campos usan ILIKE (case-insensitive)
+async function buscarPorClienteYPatente(clientName, plate) {
+  const resultado = await query(
+    `SELECT id, client_name, client_phone, vehicle_make, vehicle_model, vehicle_year,
+            license_plate, overall_status, inspection_date, created_at
+     FROM inspections
+     WHERE client_name ILIKE $1
+       AND license_plate ILIKE $2
+     ORDER BY created_at DESC`,
+    [`%${clientName}%`, `%${plate}%`]
+  );
+  return resultado.rows;
+}
+
+// Busca por patente (plate) o nombre de cliente (client) — uso interno admin
 async function buscarInspecciones({ plate, client }) {
   if (plate) {
     const resultado = await query(
@@ -84,6 +99,7 @@ module.exports = {
   crearInspeccion,
   obtenerTodasLasInspecciones,
   obtenerInspeccionPorId,
+  buscarPorClienteYPatente,
   buscarInspecciones,
   actualizarInspeccion,
   eliminarInspeccion,

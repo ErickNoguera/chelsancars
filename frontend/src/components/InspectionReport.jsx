@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import jsPDF from 'jspdf';
-import logo from '../assets/logo.png';
 import '../styles/InspectionReport.css';
+import { crearInspeccion } from '../services/api';
+import { generarPDF } from '../utils/generarPDF';
 
-export default function InspectionReport() {
+export default function InspectionReport({ onCerrarSesion }) {
   const [formData, setFormData] = useState({
     // Datos del Cliente / Vehículo
     clientName: '',
@@ -68,8 +68,6 @@ export default function InspectionReport() {
 
     // Firmas
     inspectorName: '',
-    inspectorSignature: '',
-    clientSignature: '',
   });
 
   const [charCount, setCharCount] = useState({
@@ -102,6 +100,8 @@ export default function InspectionReport() {
   };
 
   const [aiSuggestions, setAiSuggestions] = useState({});
+  const [guardando, setGuardando] = useState(false);
+  const [mensajeGuardado, setMensajeGuardado] = useState('');
 
   // Cargar datos guardados en localStorage al montar el componente
   useEffect(() => {
@@ -312,8 +312,6 @@ export default function InspectionReport() {
       recommendedRepairs: '',
       finalObservations: '',
       inspectorName: '',
-      inspectorSignature: '',
-      clientSignature: '',
     });
     setCharCount({
       registrationObservations: 0,
@@ -338,21 +336,41 @@ export default function InspectionReport() {
     // Limpiar datos del localStorage
     localStorage.removeItem('inspectionFormData');
   };
-  const handleSubmit = (e) => {
-  e.preventDefault();
-  console.log(formData);
-    // Simular guardado
-  localStorage.setItem('inspectionReport', JSON.stringify(formData));
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMensajeGuardado('');
 
-  alert('Informe guardado correctamente ✅');
-};
+    if (!formData.clientName || !formData.vehicleMake || !formData.vehicleModel || !formData.licensePlate) {
+      setMensajeGuardado('⚠️ Completa los campos obligatorios: Nombre del cliente, Marca, Modelo y Patente.');
+      return;
+    }
 
-  const handleDownloadPDF = () => {
-    const doc = new jsPDF();
+    setGuardando(true);
+    try {
+      await crearInspeccion(formData);
+      localStorage.removeItem('inspectionFormData');
+      // Descarga automática del PDF al guardar exitosamente
+      generarPDF(formData);
+      setMensajeGuardado('✅ Informe guardado y descargado correctamente.');
+    } catch (err) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        setMensajeGuardado('⚠️ Tu sesión expiró. Vuelve a iniciar sesión.');
+        setTimeout(() => onCerrarSesion?.(), 2000);
+      } else {
+        setMensajeGuardado('❌ Error al guardar. Intenta de nuevo.');
+      }
+    } finally {
+      setGuardando(false);
+    }
+  };
+
+  const handleDownloadPDF = () => generarPDF(formData);
+
+  const _INICIO_BORRAR = () => {
+    const doc = {};
     let yPosition = 0;
 
-    // HEADER CON IDENTIDAD VISUAL Y SOMBRA
-    // Sombra simulada
+    // INICIO BLOQUE A ELIMINAR
     doc.setFillColor(20, 20, 20);
     doc.rect(0, 2, 210, 25, 'F');
 
@@ -646,12 +664,6 @@ export default function InspectionReport() {
     const inspectorName = formData.inspectorName || 'Inspector no especificado';
     const nameWidth = doc.getTextWidth(inspectorName);
     doc.text(inspectorName, (210 - nameWidth) / 2, yPosition);
-
-    // Footer final
-    drawFooter();
-
-    // Guardar el PDF
-    doc.save('informe-inspeccion.pdf');
   };
 
   return (
@@ -1438,41 +1450,20 @@ export default function InspectionReport() {
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="inspectorSignature">Firma del Inspector *</label>
-              <input
-                type="text"
-                id="inspectorSignature"
-                name="inspectorSignature"
-                value={formData.inspectorSignature}
-                onChange={handleInputChange}
-                placeholder="(Próximamente: Firma digital)"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="clientSignature">Firma del Cliente *</label>
-              <input
-                type="text"
-                id="clientSignature"
-                name="clientSignature"
-                value={formData.clientSignature}
-                onChange={handleInputChange}
-                placeholder="(Próximamente: Firma digital)"
-                required
-              />
-            </div>
           </div>
         </section>
 
+        {/* MENSAJE DE ESTADO */}
+        {mensajeGuardado && (
+          <div className={`form-mensaje ${mensajeGuardado.startsWith('✅') ? 'form-mensaje--ok' : 'form-mensaje--error'}`}>
+            {mensajeGuardado}
+          </div>
+        )}
+
         {/* BOTONES DE ACCIÓN */}
         <div className="form-actions">
-          <button type="submit" className="btn btn-primary">
-            Guardar Informe
-          </button>
-          <button type="button" className="btn btn-success" onClick={handleDownloadPDF}>
-            Descargar PDF
+          <button type="submit" className="btn btn-primary" disabled={guardando}>
+            {guardando ? 'Guardando...' : 'Guardar Informe'}
           </button>
           <button type="reset" className="btn btn-secondary" onClick={handleReset}>
             Limpiar Formulario
