@@ -34,8 +34,19 @@ const NODE_ENV = process.env.NODE_ENV || "development";
 const app = express();
 
 // ========== PASO 5: CONFIGURAR MIDDLEWARES ==========
-// CORS: Permite solicitudes desde el frontend (puerto 5173)
-app.use(cors());
+const allowedOrigins = process.env.ALLOWED_ORIGIN
+  ? process.env.ALLOWED_ORIGIN.split(',').map((o) => o.trim())
+  : ['http://localhost:5173'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Permitir requests sin origin (ej: Postman, curl, mismo servidor)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: origen no permitido → ${origin}`));
+  },
+  credentials: true,
+}));
 
 // JSON Parser: Convierte body JSON a objetos JavaScript
 app.use(express.json());
