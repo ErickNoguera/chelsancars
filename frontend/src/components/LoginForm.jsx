@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import logo from '../assets/logo.png';
 import { login } from '../services/api';
-import './LoginForm.css';
+import '../styles/LoginForm.css';
 
 export default function LoginForm({ onLoginExitoso, onVolver }) {
   const [usuario, setUsuario] = useState('');
