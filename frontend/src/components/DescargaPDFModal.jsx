@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { buscarInspeccionPublica } from '../services/api';
 import { generarPDF } from '../utils/generarPDF';
-import './DescargaPDFModal.css';
+import '../styles/DescargaPDFModal.css';
 
 export default function DescargaPDFModal({ onCerrar }) {
   const [nombreCliente, setNombreCliente] = useState('');

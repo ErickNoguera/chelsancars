@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import '../styles/InspectionReport.css';
 import { crearInspeccion } from '../services/api';
 import { generarPDF } from '../utils/generarPDF';
+import { useAiSuggestion } from '../hooks/useAiSuggestion';
 
 export default function InspectionReport({ onCerrarSesion }) {
   const [formData, setFormData] = useState({
@@ -99,9 +100,16 @@ export default function InspectionReport({ onCerrarSesion }) {
     }));
   };
 
-  const [aiSuggestions, setAiSuggestions] = useState({});
   const [guardando, setGuardando] = useState(false);
   const [mensajeGuardado, setMensajeGuardado] = useState('');
+
+  const {
+    aiSuggestions,
+    updateAiSuggestion,
+    handleImproveText,
+    handleUseSuggestion,
+    handleCancelSuggestion,
+  } = useAiSuggestion(formData, setFormData, setCharCount);
 
   // Cargar datos guardados en localStorage al montar el componente
   useEffect(() => {
@@ -143,80 +151,8 @@ export default function InspectionReport({ onCerrarSesion }) {
         [name]: value.length
       }));
 
-      // Ocultar sugerencia si el usuario edita el texto
-      setAiSuggestions(prev => ({
-        ...prev,
-        [name]: {
-          ...(prev[name] || {}),
-          showPreview: false,
-        },
-      }));
+      updateAiSuggestion(name, { showPreview: false });
     }
-  };
-
-  const updateAiSuggestion = (name, updates) => {
-    setAiSuggestions(prev => ({
-      ...prev,
-      [name]: {
-        ...(prev[name] || { loading: false, suggestion: '', showPreview: false }),
-        ...updates,
-      },
-    }));
-  };
-
-  // Función mock para mejorar texto (simula llamada a API)
-  const mockImproveText = (text) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const baseText = text.trim()
-          ? `Este vehículo presenta ${text.trim().toLowerCase()}`
-          : 'Este vehículo presenta una evaluación clara y profesional de sus condiciones actuales';
-        resolve(`${baseText}. Se recomienda revisar los detalles específicos y mantener un seguimiento periódico de las observaciones.`);
-      }, 700);
-    });
-  };
-
-  const handleImproveText = async (fieldName) => {
-    const originalText = formData[fieldName] || '';
-    updateAiSuggestion(fieldName, {
-      loading: true,
-      showPreview: false,
-      suggestion: '',
-    });
-
-    const suggestion = await mockImproveText(originalText);
-
-    updateAiSuggestion(fieldName, {
-      loading: false,
-      suggestion,
-      showPreview: true,
-    });
-  };
-
-  const handleUseSuggestion = (fieldName) => {
-    const suggestionText = aiSuggestions[fieldName]?.suggestion || '';
-    if (!suggestionText) return;
-
-    setFormData(prev => ({
-      ...prev,
-      [fieldName]: suggestionText,
-    }));
-
-    setCharCount(prev => ({
-      ...prev,
-      [fieldName]: suggestionText.length,
-    }));
-
-    updateAiSuggestion(fieldName, {
-      showPreview: false,
-    });
-  };
-
-  const handleCancelSuggestion = (fieldName) => {
-    updateAiSuggestion(fieldName, {
-      showPreview: false,
-      suggestion: '',
-    });
   };
 
   const renderAiSuggestion = (fieldName) => {

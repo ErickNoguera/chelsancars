@@ -23,6 +23,7 @@ const { testConnection, closePool } = require("./src/db");
 // ========== IMPORTAR RUTAS ==========
 const adminRoutes = require("./src/routes/admin.routes");
 const inspeccionRoutes = require("./src/routes/inspection.routes");
+const aiRoutes = require("./src/routes/ai.routes");
 
 // ========== PASO 3: OBTENER CONFIGURACIÓN ==========
 // Solo después de cargar dotenv podemos acceder a process.env
@@ -56,6 +57,9 @@ app.use("/admin", adminRoutes);
 // ========== RUTAS DE INSPECCIONES ==========
 // CRUD completo - requieren JWT (verifyToken aplicado dentro de las rutas)
 app.use("/api/inspections", inspeccionRoutes);
+
+// ========== RUTAS DE IA ==========
+app.use("/api/ai", aiRoutes);
 
 // ========== PASO 7: MIDDLEWARE PARA RUTAS NO ENCONTRADAS ==========
 app.use((req, res) => {
