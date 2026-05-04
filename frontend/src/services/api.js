@@ -38,3 +38,7 @@ export const eliminarInspeccion = (id) =>
 // Requiere nombre del cliente y patente del vehículo
 export const buscarInspeccionPublica = (nombreCliente, patente) =>
   api.get('/api/inspections/publico', { params: { client: nombreCliente, plate: patente } });
+
+// --- IA (requiere JWT) ---
+export const improveText = (text) =>
+  api.post('/api/ai/improve-text', { text }).then((res) => res.data.data);

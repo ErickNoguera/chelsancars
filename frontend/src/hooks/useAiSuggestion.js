@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { improveText } from '../services/aiService';
+import { improveText } from '../services/api';
 
 export function useAiSuggestion(formData, setFormData, setCharCount) {
   const [aiSuggestions, setAiSuggestions] = useState({});
