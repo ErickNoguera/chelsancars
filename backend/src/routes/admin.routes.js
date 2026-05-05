@@ -9,13 +9,10 @@
 
 const express = require('express');
 const adminController = require('../controllers/admin.controller');
+const { loginLimiter } = require('../middlewares/rateLimiter');
 
 const router = express.Router();
 
-/**
- * POST /admin/login
- * Autentica al admin y devuelve JWT
- */
-router.post('/login', adminController.login);
+router.post('/login', loginLimiter, adminController.login);
 
 module.exports = router;
