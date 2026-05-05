@@ -1,4 +1,4 @@
-import { FaInstagram, FaWhatsapp, FaPhoneAlt, FaEnvelope, FaTiktok, FaTwitter } from 'react-icons/fa';
+import { FaInstagram, FaWhatsapp, FaPhoneAlt, FaEnvelope, FaTiktok, FaTwitter, FaFacebook } from 'react-icons/fa';
 
 function Footer() {
   return (
@@ -10,23 +10,20 @@ function Footer() {
         </div>
 
         <div className="footer-links">
-          <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
+          <a href="https://www.instagram.com/chelsancars?igsh=MWhmeTFuNHIzNDExeA==" target="_blank" rel="noreferrer" aria-label="Instagram">
             <FaInstagram />
           </a>
-          <a href="https://wa.me/5491112345678" target="_blank" rel="noreferrer" aria-label="WhatsApp">
+          <a href="https://wa.me/56921759721" target="_blank" rel="noreferrer" aria-label="WhatsApp">
             <FaWhatsapp />
           </a>
-          <a href="tel:+5491112345678" aria-label="Phone">
+          <a href="tel:+56921759721" aria-label="Phone">
             <FaPhoneAlt />
           </a>
-          <a href="mailto:contacto@chelsancars.com" aria-label="Email">
+          <a href="mailto:chelsancars@gmail.com" aria-label="Email">
             <FaEnvelope />
           </a>
-          <a href="https://tiktok.com" target="_blank" rel="noreferrer" aria-label="TikTok">
-            <FaTiktok />
-          </a>
-          <a href="https://x.com" target="_blank" rel="noreferrer" aria-label="X">
-            <FaTwitter />
+          <a href="https://www.facebook.com/share/18sT5fHV7U/" target="_blank" rel="noreferrer" aria-label="Facebook">
+            <FaFacebook />
           </a>
         </div>
       </div>

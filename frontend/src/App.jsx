@@ -124,14 +124,14 @@ function App() {
             <p className="eyebrow">Contacto</p>
             <h2>Agendá tu inspección hoy</h2>
             <p>
-              Completa el formulario, envíanos tus datos y obtén un informe profesional de tu auto.
-              Estamos listos para ayudarte con cualquier consulta.
+              Contáctanos por nuestras redes y agenda tu inspección en minutos.
+Recibe un servicio profesional y resuelve cualquier duda con nuestro equipo.
             </p>
           </div>
           <div className="contact-details">
-            <p><strong>Email:</strong> contacto@chelsancars.com</p>
-            <p><strong>Teléfono:</strong> +54 9 11 1234 5678</p>
-            <p><strong>Ubicación:</strong> Buenos Aires, Argentina</p>
+            <p><strong>Email:</strong> chelsancars@gmail.com</p>
+            <p><strong>Teléfono:</strong> +56 9 2175 9721</p>
+            <p><strong>Ubicación:</strong> Santiago de Chile, Chile</p>
           </div>
         </div>
       </section>
