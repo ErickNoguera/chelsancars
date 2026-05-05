@@ -18,6 +18,7 @@ require("dotenv").config();
 // ========== PASO 2: IMPORTAR DEPENDENCIAS ==========
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const { testConnection, closePool } = require("./src/db");
 
 // ========== IMPORTAR RUTAS ==========
@@ -34,6 +35,8 @@ const NODE_ENV = process.env.NODE_ENV || "development";
 const app = express();
 
 // ========== PASO 5: CONFIGURAR MIDDLEWARES ==========
+app.use(helmet());
+
 const allowedOrigins = process.env.ALLOWED_ORIGIN
   ? process.env.ALLOWED_ORIGIN.split(',').map((o) => o.trim())
   : ['http://localhost:5173'];
