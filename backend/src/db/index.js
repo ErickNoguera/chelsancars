@@ -1,26 +1,34 @@
 const { Pool } = require('pg');
 
+const poolConfig = process.env.DATABASE_URL
+  ? {
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    }
+  : {
+      host: process.env.DB_HOST || 'localhost',
+      port: process.env.DB_PORT || 5432,
+      user: process.env.DB_USER || 'postgres',
+      password: process.env.DB_PASSWORD || 'postgres',
+      database: process.env.DB_NAME || 'chelsancars_db',
+    };
+
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
-  database: process.env.DB_NAME || 'chelsancars_db',
+  ...poolConfig,
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000,
 });
 
 pool.on('error', (err) => {
-  console.error('❌ Error inesperado en el pool de conexiones:', err.message);
+  console.error('❌ Error inesperado en el pool:', err.message);
 });
 
 async function query(text, params = []) {
-  const start = Date.now();
   try {
     const result = await pool.query(text, params);
     if (process.env.NODE_ENV === 'development') {
-      console.log('📊 Query:', { text, duration: Date.now() - start, rows: result.rowCount });
+      console.log('📊 Query ejecutada:', { text, rows: result.rowCount });
     }
     return result;
   } catch (error) {
