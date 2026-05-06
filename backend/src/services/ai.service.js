@@ -32,7 +32,7 @@ const improveText = async (text) => {
     const data = await response.json();
     return data.choices?.[0]?.message?.content || text;
   } catch (error) {
-    console.error('Error IA:', error);
+    console.error('Error IA:', error.message);
     return text;
   }
 };

@@ -87,8 +87,12 @@ app.use((req, res) => {
 
 // ========== PASO 8: MIDDLEWARE PARA ERRORES GLOBAL ==========
 app.use((err, req, res, next) => {
-  console.error("❌ Error:", err);
-  
+  if (NODE_ENV === "development") {
+    console.error("❌ Error:", err);
+  } else {
+    console.error("❌ Error:", err.message);
+  }
+
   res.status(err.status || 500).json({
     success: false,
     message: "Error interno del servidor",
