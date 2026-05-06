@@ -1127,11 +1127,9 @@ export default function InspectionReport({ onCerrarSesion }) {
         </div>
       </form>
 
-      {pdfDescargado && (
-        <div className="pdf-toast">
-          PDF descargado correctamente
-        </div>
-      )}
+      <div className={`pdf-toast${pdfDescargado ? ' pdf-toast--visible' : ''}`}>
+        PDF descargado correctamente
+      </div>
     </div>
   );
 }
