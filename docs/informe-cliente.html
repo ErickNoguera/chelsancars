@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chelsan Cars — Sistema de Inspección Vehicular</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --amarillo: #FED42A;
+      --marron: #896B3E;
+      --negro: #060706;
+      --gris: #f7f7f7;
+      --gris-texto: #555;
+      --verde: #065f46;
+      --verde-claro: #ecfdf5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--negro);
+      background: #fff;
+      font-size: 11pt;
+      line-height: 1.7;
+    }
+
+    /* ===== PORTADA ===== */
+    .portada {
+      background: var(--negro);
+      color: white;
+      min-height: 260px;
+      padding: 48px 56px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .portada::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(254,212,42,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .portada-tag {
+      display: inline-block;
+      background: var(--amarillo);
+      color: var(--negro);
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+
+    .portada h1 {
+      font-size: 28pt;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .portada h1 span {
+      color: var(--amarillo);
+    }
+
+    .portada-subtitulo {
+      font-size: 12pt;
+      font-weight: 300;
+      color: rgba(255,255,255,0.7);
+      max-width: 500px;
+    }
+
+    .portada-meta {
+      margin-top: 32px;
+      display: flex;
+      gap: 32px;
+    }
+
+    .portada-meta-item {
+      font-size: 9pt;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .portada-meta-item strong {
+      display: block;
+      color: white;
+      font-size: 10pt;
+      letter-spacing: 0;
+      text-transform: none;
+      margin-top: 2px;
+    }
+
+    /* ===== BARRA DECORATIVA ===== */
+    .barra-deco {
+      height: 6px;
+      background: linear-gradient(90deg, var(--amarillo) 0%, var(--marron) 100%);
+    }
+
+    /* ===== CONTENIDO PRINCIPAL ===== */
+    .contenido {
+      padding: 0 56px;
+    }
+
+    /* ===== SECCIÓN ===== */
+    .seccion {
+      padding: 40px 0 32px;
+      border-bottom: 1px solid #ececec;
+    }
+
+    .seccion:last-child {
+      border-bottom: none;
+    }
+
+    .seccion-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .seccion-numero {
+      width: 32px; height: 32px;
+      background: var(--amarillo);
+      color: var(--negro);
+      font-size: 12pt;
+      font-weight: 800;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .seccion h2 {
+      font-size: 14pt;
+      font-weight: 700;
+      color: var(--negro);
+    }
+
+    .seccion p {
+      color: var(--gris-texto);
+      margin-bottom: 12px;
+    }
+
+    .seccion p:last-child { margin-bottom: 0; }
+
+    /* ===== INTRO RESUMEN ===== */
+    .intro-resumen {
+      padding: 32px 0 28px;
+      border-bottom: 1px solid #ececec;
+    }
+
+    .intro-resumen p {
+      font-size: 12pt;
+      color: var(--gris-texto);
+      max-width: 680px;
+      line-height: 1.8;
+    }
+
+    /* ===== CARDS DE BENEFICIOS ===== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: var(--gris);
+      border-radius: 10px;
+      padding: 20px 22px;
+      border-left: 4px solid var(--amarillo);
+    }
+
+    .card-icono {
+      font-size: 20pt;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .card h3 {
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--negro);
+      margin-bottom: 6px;
+    }
+
+    .card p {
+      font-size: 9.5pt;
+      color: var(--gris-texto);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ===== LISTA DE FUNCIONES ===== */
+    .funciones-lista {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .funciones-lista li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 10pt;
+      color: var(--gris-texto);
+    }
+
+    .funciones-lista li::before {
+      content: '✓';
+      background: var(--verde-claro);
+      color: var(--verde);
+      font-weight: 700;
+      font-size: 9pt;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ===== FLUJO ===== */
+    .flujo {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .flujo-paso {
+      flex: 1;
+      min-width: 130px;
+      text-align: center;
+      padding: 0 8px;
+      position: relative;
+    }
+
+    .flujo-paso:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -10px;
+      top: 22px;
+      font-size: 14pt;
+      color: var(--amarillo);
+      font-weight: 700;
+    }
+
+    .flujo-num {
+      width: 44px; height: 44px;
+      background: var(--negro);
+      color: var(--amarillo);
+      font-size: 14pt;
+      font-weight: 800;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+    }
+
+    .flujo-paso h4 {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: var(--negro);
+      margin-bottom: 4px;
+    }
+
+    .flujo-paso p {
+      font-size: 8.5pt;
+      color: var(--gris-texto);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* ===== SEGURIDAD ===== */
+    .seguridad-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .seguridad-item {
+      background: var(--negro);
+      color: white;
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .seguridad-item .icono {
+      font-size: 16pt;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .seguridad-item h4 {
+      font-size: 9.5pt;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--amarillo);
+    }
+
+    .seguridad-item p {
+      font-size: 8.5pt;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* ===== STACK TECNOLÓGICO ===== */
+    .tech-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin-top: 8px;
+    }
+
+    .tech-col h4 {
+      font-size: 9pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--marron);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--amarillo);
+    }
+
+    .tech-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .tech-col ul li {
+      font-size: 9.5pt;
+      color: var(--gris-texto);
+      padding-left: 12px;
+      position: relative;
+    }
+
+    .tech-col ul li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: var(--amarillo);
+      font-weight: 700;
+    }
+
+    /* ===== CIERRE ===== */
+    .cierre {
+      background: var(--negro);
+      color: white;
+      padding: 36px 56px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cierre-texto h3 {
+      font-size: 14pt;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .cierre-texto h3 span { color: var(--amarillo); }
+
+    .cierre-texto p {
+      font-size: 9.5pt;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .cierre-dev {
+      text-align: right;
+    }
+
+    .cierre-dev p {
+      font-size: 8.5pt;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+    }
+
+    .cierre-dev strong {
+      display: block;
+      font-size: 11pt;
+      color: white;
+      margin-bottom: 2px;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { font-size: 10pt; }
+
+      /* Preservar colores en impresión */
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      /* Evitar encabezados huérfanos al final de página */
+      .seccion-header {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
+      .intro-resumen {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
+      /* Evitar que bloques se corten a la mitad */
+      .card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .seguridad-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .flujo {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .cierre {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .funciones-lista li {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      /* Portada siempre ocupa su propia zona */
+      .portada {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
+      .barra-deco {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PORTADA -->
+  <div class="portada">
+    <div class="portada-tag">Documento técnico — Proyecto entregado</div>
+    <h1>Sistema de<br><span>Inspección Vehicular</span></h1>
+    <p class="portada-subtitulo">Plataforma web para la gestión, generación y entrega digital de informes de inspección</p>
+    <div class="portada-meta">
+      <div class="portada-meta-item">
+        Cliente
+        <strong>Chelsan Cars</strong>
+      </div>
+      <div class="portada-meta-item">
+        Ubicación
+        <strong>Santiago de Chile</strong>
+      </div>
+      <div class="portada-meta-item">
+        Estado
+        <strong>✓ En producción</strong>
+      </div>
+      <div class="portada-meta-item">
+        Año
+        <strong>2025 – 2026</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="barra-deco"></div>
+
+  <div class="contenido">
+
+    <!-- INTRO -->
+    <div class="intro-resumen">
+      <p>
+        Chelsan Cars contaba con un proceso manual de inspecciones: formularios en papel y documentos Word difíciles de organizar y entregar. Esta plataforma digitaliza el proceso completo — desde la inspección hasta la entrega del informe al cliente — de forma segura, rápida y profesional.
+      </p>
+    </div>
+
+    <!-- 1. BENEFICIOS -->
+    <div class="seccion">
+      <div class="seccion-header">
+        <div class="seccion-numero">1</div>
+        <h2>¿Qué beneficios trae para el negocio?</h2>
+      </div>
+      <div class="cards-grid">
+        <div class="card">
+          <span class="card-icono">📋</span>
+          <h3>Cero papel</h3>
+          <p>Todos los informes se crean y almacenan digitalmente en la nube. Accesibles desde cualquier dispositivo en cualquier momento.</p>
+        </div>
+        <div class="card">
+          <span class="card-icono">⚡</span>
+          <h3>Entrega inmediata al cliente</h3>
+          <p>El cliente descarga su informe en PDF al instante, ingresando solo su nombre y la patente del vehículo. Sin intermediarios.</p>
+        </div>
+        <div class="card">
+          <span class="card-icono">🤖</span>
+          <h3>Redacción asistida por IA</h3>
+          <p>Cada campo de observaciones cuenta con un botón "Mejorar con IA" que eleva la calidad técnica y profesional del texto automáticamente.</p>
+        </div>
+        <div class="card">
+          <span class="card-icono">🔍</span>
+          <h3>Búsqueda y gestión</h3>
+          <p>Panel de administración para buscar, editar y gestionar el historial completo de inspecciones por patente o nombre de cliente.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. FUNCIONALIDADES -->
+    <div class="seccion">
+      <div class="seccion-header">
+        <div class="seccion-numero">2</div>
+        <h2>Funcionalidades del sistema</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+        <div>
+          <p style="font-weight: 700; font-size: 10pt; color: var(--negro); margin-bottom: 12px;">Panel de administración</p>
+          <ul class="funciones-lista">
+            <li>Login seguro con sesión persistente (7 días)</li>
+            <li>Formulario con más de 30 campos por inspección</li>
+            <li>Secciones: datos del vehículo, verificación legal, mecánica, scanner, carrocería, interior y conclusión</li>
+            <li>Mejora de observaciones con IA (OpenAI GPT-4o-mini)</li>
+            <li>Guardado automático para no perder datos</li>
+            <li>Descarga de PDF con diseño de marca</li>
+            <li>Listado y búsqueda de inspecciones anteriores</li>
+            <li>Edición y eliminación de registros</li>
+          </ul>
+        </div>
+        <div>
+          <p style="font-weight: 700; font-size: 10pt; color: var(--negro); margin-bottom: 12px;">Portal del cliente</p>
+          <ul class="funciones-lista">
+            <li>Acceso sin registro ni contraseña</li>
+            <li>Búsqueda por nombre + patente del vehículo</li>
+            <li>Descarga del informe en PDF al instante</li>
+            <li>Confirmación visual de descarga exitosa</li>
+            <li>Disponible 24/7 desde cualquier dispositivo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. CÓMO FUNCIONA -->
+    <div class="seccion">
+      <div class="seccion-header">
+        <div class="seccion-numero">3</div>
+        <h2>¿Cómo funciona el flujo de trabajo?</h2>
+      </div>
+      <div class="flujo">
+        <div class="flujo-paso">
+          <div class="flujo-num">1</div>
+          <h4>Inspección</h4>
+          <p>El inspector completa el formulario durante o después de la revisión del vehículo</p>
+        </div>
+        <div class="flujo-paso">
+          <div class="flujo-num">2</div>
+          <h4>IA opcional</h4>
+          <p>Mejora las observaciones técnicas con un clic usando inteligencia artificial</p>
+        </div>
+        <div class="flujo-paso">
+          <div class="flujo-num">3</div>
+          <h4>Guardar</h4>
+          <p>El informe se almacena en la nube y se descarga automáticamente en PDF</p>
+        </div>
+        <div class="flujo-paso">
+          <div class="flujo-num">4</div>
+          <h4>Cliente</h4>
+          <p>El cliente ingresa al sitio, escribe su nombre y patente, y descarga su informe</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. SEGURIDAD -->
+    <div class="seccion">
+      <div class="seccion-header">
+        <div class="seccion-numero">4</div>
+        <h2>Seguridad del sistema</h2>
+      </div>
+      <div class="seguridad-grid">
+        <div class="seguridad-item">
+          <span class="icono">🔐</span>
+          <h4>Autenticación segura</h4>
+          <p>Sesiones con tokens de acceso de corta duración y tokens de renovación automática de 7 días</p>
+        </div>
+        <div class="seguridad-item">
+          <span class="icono">🛡️</span>
+          <h4>Protección contra ataques</h4>
+          <p>Límite de intentos de login para bloquear ataques de fuerza bruta</p>
+        </div>
+        <div class="seguridad-item">
+          <span class="icono">🌐</span>
+          <h4>Headers de seguridad</h4>
+          <p>14 headers HTTP configurados para proteger contra vulnerabilidades comunes en la web</p>
+        </div>
+        <div class="seguridad-item">
+          <span class="icono">✅</span>
+          <h4>Validación de datos</h4>
+          <p>Todos los formularios y endpoints validan y sanitizan los datos antes de procesarlos</p>
+        </div>
+        <div class="seguridad-item">
+          <span class="icono">🔒</span>
+          <h4>Datos en la nube</h4>
+          <p>Base de datos PostgreSQL con conexión SSL cifrada alojada en Neon</p>
+        </div>
+        <div class="seguridad-item">
+          <span class="icono">🚀</span>
+          <h4>Producción robusta</h4>
+          <p>Logs sin datos sensibles, credenciales en variables de entorno, CORS restringido</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. TECNOLOGÍA -->
+    <div class="seccion">
+      <div class="seccion-header">
+        <div class="seccion-numero">5</div>
+        <h2>Tecnología utilizada</h2>
+      </div>
+      <div class="tech-cols">
+        <div class="tech-col">
+          <h4>Frontend</h4>
+          <ul>
+            <li>React 18</li>
+            <li>Vite 5</li>
+            <li>Axios</li>
+            <li>jsPDF</li>
+            <li>CSS personalizado</li>
+          </ul>
+        </div>
+        <div class="tech-col">
+          <h4>Backend</h4>
+          <ul>
+            <li>Node.js</li>
+            <li>Express 5</li>
+            <li>PostgreSQL</li>
+            <li>JWT + Bcrypt</li>
+            <li>OpenAI API</li>
+          </ul>
+        </div>
+        <div class="tech-col">
+          <h4>Infraestructura</h4>
+          <ul>
+            <li>Netlify (frontend)</li>
+            <li>Render (backend)</li>
+            <li>Neon (base de datos)</li>
+            <li>GitHub</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CIERRE -->
+  <div class="cierre">
+    <div class="cierre-texto">
+      <h3>Chelsan Cars — <span>Sistema de Inspección Vehicular</span></h3>
+      <p>Plataforma web en producción activa · Santiago de Chile</p>
+    </div>
+    <div class="cierre-dev">
+      <strong>Erick Noguera</strong>
+      <p>Desarrollador Fullstack<br>Desarrollo completo del proyecto</p>
+    </div>
+  </div>
+
+</body>
+</html>
