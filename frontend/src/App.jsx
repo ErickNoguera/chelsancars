@@ -5,6 +5,7 @@ import Footer from './components/Footer.jsx';
 import LoginForm from './components/LoginForm.jsx';
 import InspectionReport from './components/InspectionReport.jsx';
 import DescargaPDFModal from './components/DescargaPDFModal.jsx';
+import { logoutApi } from './services/api';
 import serviceImage from './assets/service.jpg';
 import inspectionImage from './assets/inspection.jpg';
 
@@ -34,13 +35,19 @@ function App() {
     }
   };
 
-  const handleLoginExitoso = (token) => {
+  const handleLoginExitoso = (token, refreshToken) => {
     localStorage.setItem('token', token);
+    localStorage.setItem('refreshToken', refreshToken);
     setVista('formulario');
   };
 
-  const handleCerrarSesion = () => {
+  const handleCerrarSesion = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
+      try { await logoutApi(refreshToken); } catch { /* si falla, igual limpiamos */ }
+    }
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     setVista('landing');
   };
 
