@@ -9,12 +9,6 @@ async function crear(req, res) {
       overallStatus, ...restoDelFormulario
     } = req.body;
 
-    if (!clientName || !vehicleMake || !vehicleModel || !licensePlate) {
-      return res.status(400).json({
-        error: 'Campos requeridos: clientName, vehicleMake, vehicleModel, licensePlate',
-      });
-    }
-
     const nuevaInspeccion = await inspeccionServicio.crearInspeccion({
       clientName,
       clientPhone,
@@ -106,12 +100,6 @@ async function actualizar(req, res) {
       overallStatus,
     } = req.body;
 
-    if (!clientName || !vehicleMake || !vehicleModel || !licensePlate) {
-      return res.status(400).json({
-        error: 'Campos requeridos: clientName, vehicleMake, vehicleModel, licensePlate',
-      });
-    }
-
     const actualizada = await inspeccionServicio.actualizarInspeccion(id, {
       clientName,
       clientPhone,
@@ -160,10 +148,6 @@ async function eliminar(req, res) {
 async function buscarPublico(req, res) {
   try {
     const { client, plate } = req.query;
-
-    if (!client || !plate) {
-      return res.status(400).json({ error: 'Debes enviar tu nombre (client) y la patente del vehículo (plate).' });
-    }
 
     const resultados = await inspeccionServicio.buscarPorClienteYPatente(client.trim(), plate.trim());
 

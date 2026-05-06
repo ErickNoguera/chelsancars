@@ -102,6 +102,7 @@ export default function InspectionReport({ onCerrarSesion }) {
 
   const [guardando, setGuardando] = useState(false);
   const [mensajeGuardado, setMensajeGuardado] = useState('');
+  const [pdfDescargado, setPdfDescargado] = useState(false);
 
   const {
     aiSuggestions,
@@ -287,7 +288,9 @@ export default function InspectionReport({ onCerrarSesion }) {
       localStorage.removeItem('inspectionFormData');
       // Descarga automática del PDF al guardar exitosamente
       generarPDF(formData);
-      setMensajeGuardado('✅ Informe guardado y descargado correctamente.');
+      setMensajeGuardado('✅ Informe guardado correctamente.');
+      setPdfDescargado(true);
+      setTimeout(() => setPdfDescargado(false), 3000);
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
         setMensajeGuardado('⚠️ Tu sesión expiró. Vuelve a iniciar sesión.');
@@ -300,7 +303,11 @@ export default function InspectionReport({ onCerrarSesion }) {
     }
   };
 
-  const handleDownloadPDF = () => generarPDF(formData);
+  const handleDownloadPDF = () => {
+    generarPDF(formData);
+    setPdfDescargado(true);
+    setTimeout(() => setPdfDescargado(false), 3000);
+  };
 
   return (
     <div className="inspection-report-container">
@@ -1101,11 +1108,20 @@ export default function InspectionReport({ onCerrarSesion }) {
           <button type="submit" className="btn btn-primary" disabled={guardando}>
             {guardando ? 'Guardando...' : 'Guardar Informe'}
           </button>
+          <button type="button" className="btn btn-pdf" onClick={handleDownloadPDF}>
+            Descargar PDF
+          </button>
           <button type="reset" className="btn btn-secondary" onClick={handleReset}>
             Limpiar Formulario
           </button>
         </div>
       </form>
+
+      {pdfDescargado && (
+        <div className="pdf-toast">
+          PDF descargado correctamente
+        </div>
+      )}
     </div>
   );
 }
