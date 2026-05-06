@@ -443,7 +443,7 @@
 }
 
 .btn-pdf {
-  background: linear-gradient(135deg, #1a56db 0%, #1e40af 100%);
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
   color: white;
 }
 
@@ -460,13 +460,14 @@
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  background: #065f46;
-  color: white;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
   padding: 0.85rem 1.5rem;
   border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 500;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   animation: toast-in 0.3s ease;
   z-index: 1000;
 }
