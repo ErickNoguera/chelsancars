@@ -101,8 +101,10 @@ app.use((err, req, res, next) => {
 });
 
 // ========== PASO 9: INICIAR SERVIDOR ==========
-app.listen(PORT, async () => {
-  console.log(`
+// Exportar app para tests (supertest no necesita que el servidor esté escuchando)
+if (require.main === module) {
+  app.listen(PORT, async () => {
+    console.log(`
 ╔════════════════════════════════════════╗
 ║  🚀 SERVIDOR CHELSAN CARS INICIADO    ║
 ╠════════════════════════════════════════╣
@@ -110,31 +112,33 @@ app.listen(PORT, async () => {
 ║  Puerto: ${String(PORT).padEnd(32)} ║
 ║  URL: http://localhost:${String(PORT).padEnd(26)} ║
 ╚════════════════════════════════════════╝
-  `);
+    `);
 
-  // ========== PASO 10: PROBAR CONEXIÓN A PostgreSQL ==========
-  const dbConnected = await testConnection();
-  if (!dbConnected) {
-    console.warn("⚠️  ADVERTENCIA: No se pudo conectar a PostgreSQL");
-    console.warn("   La API funcionará pero sin persistencia en base de datos");
-  }
-});
+    // ========== PASO 10: PROBAR CONEXIÓN A PostgreSQL ==========
+    const dbConnected = await testConnection();
+    if (!dbConnected) {
+      console.warn("⚠️  ADVERTENCIA: No se pudo conectar a PostgreSQL");
+      console.warn("   La API funcionará pero sin persistencia en base de datos");
+    }
+  });
 
-// ========== PASO 11: MANEJO DE CIERRE GRACEFUL ==========
-// Cuando el servidor se detiene, cerrar pool de conexiones
-process.on("SIGTERM", async () => {
-  console.log("📍 Señal SIGTERM recibida, cerrando servidor...");
-  await closePool();
-  process.exit(0);
-});
+  // ========== PASO 11: MANEJO DE CIERRE GRACEFUL ==========
+  process.on("SIGTERM", async () => {
+    console.log("📍 Señal SIGTERM recibida, cerrando servidor...");
+    await closePool();
+    process.exit(0);
+  });
 
-process.on("SIGINT", async () => {
-  console.log("📍 Señal SIGINT recibida, cerrando servidor...");
-  await closePool();
-  process.exit(0);
-});
+  process.on("SIGINT", async () => {
+    console.log("📍 Señal SIGINT recibida, cerrando servidor...");
+    await closePool();
+    process.exit(0);
+  });
+}
 
 // Manejo de errores no capturados (por si acaso)
 process.on("unhandledRejection", (err) => {
   console.error("⚠️  Rechazo no manejado:", err);
 });
+
+module.exports = app;
