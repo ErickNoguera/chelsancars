@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
 );
 
 CREATE TABLE IF NOT EXISTS inspections (
-  id              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+  id              SERIAL       PRIMARY KEY,
   client_name     VARCHAR(255) NOT NULL,
   client_phone    VARCHAR(50),
   client_email    VARCHAR(255),

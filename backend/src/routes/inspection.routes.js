@@ -34,8 +34,8 @@ router.get('/search', inspeccionControlador.buscar);
 
 router.post('/', inspeccionRules, validate, inspeccionControlador.crear);
 router.get('/', inspeccionControlador.listar);
-router.get('/:id', [param('id').isUUID().withMessage('id debe ser un UUID válido')], validate, inspeccionControlador.obtenerUna);
-router.put('/:id', [param('id').isUUID().withMessage('id debe ser un UUID válido'), ...inspeccionRules], validate, inspeccionControlador.actualizar);
-router.delete('/:id', [param('id').isUUID().withMessage('id debe ser un UUID válido')], validate, inspeccionControlador.eliminar);
+router.get('/:id', [param('id').isInt({ min: 1 }).withMessage('id debe ser un número válido')], validate, inspeccionControlador.obtenerUna);
+router.put('/:id', [param('id').isInt({ min: 1 }).withMessage('id debe ser un número válido'), ...inspeccionRules], validate, inspeccionControlador.actualizar);
+router.delete('/:id', [param('id').isInt({ min: 1 }).withMessage('id debe ser un número válido')], validate, inspeccionControlador.eliminar);
 
 module.exports = router;
