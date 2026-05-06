@@ -35,7 +35,7 @@ export default function DescargaPDFModal({ onCerrar }) {
       const datos = inspeccion.data_json || inspeccion;
       generarPDF(datos);
       setExito(true);
-      setTimeout(() => onCerrar(), 2500);
+      setTimeout(() => onCerrar(), 3500);
     } catch (err) {
       if (err.response?.status === 404) {
         setError('No se encontró ningún informe con ese nombre y patente.');
