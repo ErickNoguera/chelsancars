@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
+  baseURL: BASE_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -14,9 +16,37 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Renueva el access token automáticamente cuando expira
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const original = error.config;
+    if (error.response?.status === 401 && !original._retry) {
+      original._retry = true;
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (refreshToken) {
+        try {
+          const { data } = await axios.post(`${BASE_URL}/admin/refresh`, { refreshToken });
+          localStorage.setItem('token', data.token);
+          original.headers.Authorization = `Bearer ${data.token}`;
+          return api(original);
+        } catch {
+          localStorage.removeItem('token');
+          localStorage.removeItem('refreshToken');
+          window.location.reload();
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // --- Autenticación ---
 export const login = (username, password) =>
   api.post('/admin/login', { username, password });
+
+export const logoutApi = (refreshToken) =>
+  api.post('/admin/logout', { refreshToken });
 
 // --- Inspecciones (requieren JWT) ---
 export const crearInspeccion = (datos) =>
@@ -35,7 +65,6 @@ export const eliminarInspeccion = (id) =>
   api.delete(`/api/inspections/${id}`);
 
 // --- Búsqueda pública (sin JWT, para clientes) ---
-// Requiere nombre del cliente y patente del vehículo
 export const buscarInspeccionPublica = (nombreCliente, patente) =>
   api.get('/api/inspections/publico', { params: { client: nombreCliente, plate: patente } });
 

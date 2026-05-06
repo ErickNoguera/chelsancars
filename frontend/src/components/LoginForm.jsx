@@ -21,9 +21,10 @@ export default function LoginForm({ onLoginExitoso, onVolver }) {
     setCargando(true);
     try {
       const respuesta = await login(usuario.trim(), contrasena);
-      const { token } = respuesta.data;
+      const { token, refreshToken } = respuesta.data;
       localStorage.setItem('token', token);
-      onLoginExitoso(token);
+      localStorage.setItem('refreshToken', refreshToken);
+      onLoginExitoso(token, refreshToken);
     } catch (err) {
       if (err.response?.status === 401) {
         setError('Usuario o contraseña incorrectos.');

@@ -16,4 +16,12 @@ const aiLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-module.exports = { loginLimiter, aiLimiter };
+const refreshLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  message: { success: false, message: 'Demasiadas solicitudes de renovación. Intenta de nuevo en 15 minutos.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+module.exports = { loginLimiter, aiLimiter, refreshLimiter };
