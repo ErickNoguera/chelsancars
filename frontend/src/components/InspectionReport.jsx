@@ -287,10 +287,15 @@ export default function InspectionReport({ onCerrarSesion }) {
       await crearInspeccion(formData);
       localStorage.removeItem('inspectionFormData');
       // Descarga automática del PDF al guardar exitosamente
-      generarPDF(formData);
+      try {
+        generarPDF(formData);
+      } catch (e) {
+        console.error('Error generando PDF:', e.message);
+      } finally {
+        setPdfDescargado(true);
+        setTimeout(() => setPdfDescargado(false), 3000);
+      }
       setMensajeGuardado('✅ Informe guardado correctamente.');
-      setPdfDescargado(true);
-      setTimeout(() => setPdfDescargado(false), 3000);
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
         setMensajeGuardado('⚠️ Tu sesión expiró. Vuelve a iniciar sesión.');
@@ -304,9 +309,14 @@ export default function InspectionReport({ onCerrarSesion }) {
   };
 
   const handleDownloadPDF = () => {
-    generarPDF(formData);
-    setPdfDescargado(true);
-    setTimeout(() => setPdfDescargado(false), 3000);
+    try {
+      generarPDF(formData);
+    } catch (e) {
+      console.error('Error generando PDF:', e.message);
+    } finally {
+      setPdfDescargado(true);
+      setTimeout(() => setPdfDescargado(false), 3000);
+    }
   };
 
   return (
