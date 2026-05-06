@@ -8,6 +8,7 @@ export default function DescargaPDFModal({ onCerrar }) {
   const [patente, setPatente] = useState('');
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState('');
+  const [exito, setExito] = useState(false);
 
   const handleDescargar = async (e) => {
     e.preventDefault();
@@ -33,7 +34,8 @@ export default function DescargaPDFModal({ onCerrar }) {
 
       const datos = inspeccion.data_json || inspeccion;
       generarPDF(datos);
-      onCerrar();
+      setExito(true);
+      setTimeout(() => onCerrar(), 2500);
     } catch (err) {
       if (err.response?.status === 404) {
         setError('No se encontró ningún informe con ese nombre y patente.');
@@ -58,43 +60,53 @@ export default function DescargaPDFModal({ onCerrar }) {
           ✕
         </button>
 
-        <h2 className="modal-titulo">Descargar Informe</h2>
-        <p className="modal-descripcion">
-          Ingresa tu nombre y la patente del vehículo para obtener tu informe en PDF.
-        </p>
-
-        <form onSubmit={handleDescargar} className="modal-form">
-          <div className="modal-field">
-            <label htmlFor="nombreCliente">Tu nombre</label>
-            <input
-              id="nombreCliente"
-              type="text"
-              value={nombreCliente}
-              onChange={(e) => setNombreCliente(e.target.value)}
-              placeholder="Ej: Juan Pérez"
-              disabled={cargando}
-              autoFocus
-            />
+        {exito ? (
+          <div className="modal-exito">
+            <div className="modal-exito-icono">✓</div>
+            <h2 className="modal-titulo">¡PDF descargado!</h2>
+            <p className="modal-descripcion">Tu informe se descargó correctamente.</p>
           </div>
+        ) : (
+          <>
+            <h2 className="modal-titulo">Descargar Informe</h2>
+            <p className="modal-descripcion">
+              Ingresa tu nombre y la patente del vehículo para obtener tu informe en PDF.
+            </p>
 
-          <div className="modal-field">
-            <label htmlFor="patente">Patente del vehículo</label>
-            <input
-              id="patente"
-              type="text"
-              value={patente}
-              onChange={(e) => setPatente(e.target.value)}
-              placeholder="Ej: ABC123"
-              disabled={cargando}
-            />
-          </div>
+            <form onSubmit={handleDescargar} className="modal-form">
+              <div className="modal-field">
+                <label htmlFor="nombreCliente">Tu nombre</label>
+                <input
+                  id="nombreCliente"
+                  type="text"
+                  value={nombreCliente}
+                  onChange={(e) => setNombreCliente(e.target.value)}
+                  placeholder="Ej: Juan Pérez"
+                  disabled={cargando}
+                  autoFocus
+                />
+              </div>
 
-          {error && <p className="modal-error">{error}</p>}
+              <div className="modal-field">
+                <label htmlFor="patente">Patente del vehículo</label>
+                <input
+                  id="patente"
+                  type="text"
+                  value={patente}
+                  onChange={(e) => setPatente(e.target.value)}
+                  placeholder="Ej: ABC123"
+                  disabled={cargando}
+                />
+              </div>
 
-          <button type="submit" className="modal-btn" disabled={cargando}>
-            {cargando ? 'Buscando...' : 'Descargar PDF'}
-          </button>
-        </form>
+              {error && <p className="modal-error">{error}</p>}
+
+              <button type="submit" className="modal-btn" disabled={cargando}>
+                {cargando ? 'Buscando...' : 'Descargar PDF'}
+              </button>
+            </form>
+          </>
+        )}
       </div>
     </div>
   );
