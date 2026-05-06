@@ -400,13 +400,57 @@
     /* ===== PRINT ===== */
     @media print {
       body { font-size: 10pt; }
-      .portada { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .barra-deco { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .seguridad-item { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .cierre { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .flujo-num { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .portada-tag { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      /* Preservar colores en impresión */
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      /* Evitar encabezados huérfanos al final de página */
+      .seccion-header {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
+      .intro-resumen {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
+      /* Evitar que bloques se corten a la mitad */
+      .card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .seguridad-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .flujo {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .cierre {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .funciones-lista li {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      /* Portada siempre ocupa su propia zona */
+      .portada {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
+      .barra-deco {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
     }
   </style>
 </head>
