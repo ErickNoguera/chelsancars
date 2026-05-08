@@ -34,6 +34,10 @@ const NODE_ENV = process.env.NODE_ENV || "development";
 // ========== PASO 4: INICIALIZAR EXPRESS ==========
 const app = express();
 
+// Confiar en el proxy de Render (necesario para que express-rate-limit
+// lea correctamente la IP real del cliente desde X-Forwarded-For)
+app.set('trust proxy', 1);
+
 // ========== PASO 5: CONFIGURAR MIDDLEWARES ==========
 app.use(helmet());
 

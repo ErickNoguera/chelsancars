@@ -28,7 +28,7 @@ El proyecto es una aplicación web fullstack desarrollada de forma freelance, co
 - **Tipo:** Aplicación web fullstack SaaS para cliente real
 - **Modalidad:** Freelance
 - **Estado:** Producción activa
-- **Repositorio:** Privado / GitHub
+- **Repositorio:** Público / GitHub
 - **Deploy:** Netlify (frontend) + Render (backend) + Neon (base de datos)
 
 ---
