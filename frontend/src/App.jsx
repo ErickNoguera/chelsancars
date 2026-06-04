@@ -6,7 +6,7 @@ import LoginForm from './components/LoginForm.jsx';
 import InspectionReport from './components/InspectionReport.jsx';
 import DescargaPDFModal from './components/DescargaPDFModal.jsx';
 import { logoutApi } from './services/api';
-import serviceImage from './assets/service.jpg';
+import serviceImage from './assets/service.png';
 import inspectionImage from './assets/inspection.jpg';
 
 // Verifica si hay un token JWT válido guardado en localStorage

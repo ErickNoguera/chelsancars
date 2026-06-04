@@ -1,15 +1,15 @@
 /* Variables de color y diseño */
 :root {
-  --color-primary: #2563eb;
-  --color-primary-dark: #1e40af;
-  --color-primary-light: #dbeafe;
+  --color-primary: #24384D;
+  --color-primary-dark: #1A2A3A;
+  --color-primary-light: #DCE5EC;
   --color-secondary: #6b7280;
-  --color-secondary-light: #f3f4f6;
+  --color-secondary-light: #F4F6F8;
   --color-success: #10b981;
   --color-error: #ef4444;
   --color-warning: #f59e0b;
-  --color-border: #e5e7eb;
-  --color-text-primary: #1f2937;
+  --color-border: #D6DCE3;
+  --color-text-primary: #111827;
   --color-text-secondary: #6b7280;
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -35,7 +35,7 @@
 
 /* Contenedor principal */
 .inspection-report-container {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #E9EEF2 0%, #D6DCE3 100%);
   min-height: 100vh;
   padding: var(--spacing-2xl) var(--spacing-lg);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -239,7 +239,7 @@
 /* Sugerencia compacta de IA */
 .ai-suggestion-compact {
   border: 1px solid var(--color-primary-light);
-  background: #f0f9ff;
+  background: #DCE5EC;
   border-radius: var(--border-radius-sm);
   padding: var(--spacing-sm);
   margin-top: var(--spacing-sm);

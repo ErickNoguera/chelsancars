@@ -2,14 +2,14 @@
 
 :root {
   --background: #FFFFFF;
-  --section-bg: #F8F9FA;
-  --text: #060706;
-  --text-secondary: rgba(6, 7, 6, 0.7);
-  --accent: #FED42A;
-  --secondary: #896B3E;
-  --navbar-bg: #060706;
+  --section-bg: #F4F6F8;
+  --text: #111827;
+  --text-secondary: #6B7280;
+  --accent: #24384D;
+  --secondary: #4A627A;
+  --navbar-bg: #1A2A3A;
   --card-bg: #FFFFFF;
-  --border: rgba(6, 7, 6, 0.12);
+  --border: #D6DCE3;
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -68,7 +68,7 @@ section {
 }
 
 .navbar-logo img {
-  height: 50px;
+  height: 70px;
   width: auto;
   transition: transform 0.3s ease, filter 0.3s ease;
 }
@@ -95,7 +95,7 @@ section {
 }
 
 .navbar-links a:hover {
-  color: var(--accent);
+  color: #B7C2CC;
 }
 
 .navbar-link-btn {
@@ -110,12 +110,12 @@ section {
 }
 
 .navbar-link-btn:hover {
-  color: var(--accent);
+  color: #B7C2CC;
 }
 
 .navbar-cta {
-  background: var(--accent);
-  color: var(--text) !important;
+  background: var(--secondary);
+  color: #FFFFFF !important;
   padding: 12px 20px;
   border-radius: 999px;
   font-weight: 700;
@@ -123,7 +123,7 @@ section {
   font-family: inherit;
   font-size: inherit;
   cursor: pointer;
-  box-shadow: 0 12px 25px rgba(254, 212, 42, 0.22);
+  box-shadow: 0 12px 25px rgba(74, 98, 122, 0.25);
   transition: transform 0.25s ease, filter 0.25s ease;
 }
 
@@ -148,14 +148,54 @@ section {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(6, 7, 6, 0.38);
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  padding: 40px 0;
 }
 
 .hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 660px;
-  padding: 40px 0;
+  flex: 1;
+  max-width: 600px;
+}
+
+.hero-logo-display {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-logo-img {
+  width: 525px;
+  height: auto;
+  filter: drop-shadow(0 0 40px rgba(183, 194, 204, 0.35)) drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5));
+  animation: hero-logo-float 4s ease-in-out infinite;
+}
+
+@keyframes hero-logo-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+@media (max-width: 900px) {
+  .hero-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+  .hero-logo-img {
+    width: 350px;
+  }
 }
 
 .eyebrow {
@@ -163,7 +203,7 @@ section {
   font-size: 0.95rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: #B7C2CC;
   font-weight: 700;
 }
 
@@ -185,19 +225,19 @@ section {
 .hero-button {
   display: inline-block;
   padding: 16px 32px;
-  background: var(--accent);
-  color: var(--text);
+  background: #FFFFFF;
+  color: #1A2A3A;
   border-radius: 999px;
   text-decoration: none;
   font-weight: 700;
   font-size: 1rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 14px 40px rgba(254, 212, 42, 0.25);
+  box-shadow: 0 14px 40px rgba(255, 255, 255, 0.15);
 }
 
 .hero-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 48px rgba(254, 212, 42, 0.35);
+  box-shadow: 0 18px 48px rgba(255, 255, 255, 0.25);
 }
 
 .feature-section {
@@ -410,8 +450,8 @@ section {
 }
 
 .footer-links a:hover {
-  background: var(--accent);
-  color: var(--text);
+  background: var(--secondary);
+  color: #FFFFFF;
   transform: translateY(-2px);
 }
 

@@ -1,7 +1,7 @@
 .modal-fondo {
   position: fixed;
   inset: 0;
-  background: rgba(6, 7, 6, 0.7);
+  background: rgba(26, 42, 58, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,7 +53,7 @@
 .modal-titulo {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #060706;
+  color: #111827;
   margin: 0 0 0.5rem;
 }
 
@@ -79,7 +79,7 @@
 .modal-field label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #060706;
+  color: #111827;
 }
 
 .modal-field input {
@@ -95,7 +95,7 @@
 }
 
 .modal-field input:focus {
-  border-color: #FED42A;
+  border-color: #24384D;
 }
 
 .modal-field input:disabled {
@@ -114,8 +114,8 @@
 }
 
 .modal-btn {
-  background: #FED42A;
-  color: #060706;
+  background: #24384D;
+  color: #FFFFFF;
   border: none;
   border-radius: 8px;
   padding: 0.85rem;
@@ -127,7 +127,7 @@
 }
 
 .modal-btn:hover:not(:disabled) {
-  background: #e6bf24;
+  background: #162433;
 }
 
 .modal-btn:active:not(:disabled) {

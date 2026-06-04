@@ -45,6 +45,10 @@ const allowedOrigins = process.env.ALLOWED_ORIGIN
   ? process.env.ALLOWED_ORIGIN.split(',').map((o) => o.trim())
   : ['http://localhost:5173'];
 
+if (NODE_ENV === 'development' && !allowedOrigins.includes('http://localhost:5173')) {
+  allowedOrigins.push('http://localhost:5173');
+}
+
 app.use(cors({
   origin: (origin, callback) => {
     // Permitir requests sin origin (ej: Postman, curl, mismo servidor)

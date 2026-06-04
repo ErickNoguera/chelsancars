@@ -11,9 +11,9 @@ export function generarPDF(datos) {
   let yPosition = 0;
 
   // HEADER
-  doc.setFillColor(20, 20, 20);
+  doc.setFillColor(36, 56, 77);
   doc.rect(0, 2, 210, 25, 'F');
-  doc.setFillColor(30, 30, 30);
+  doc.setFillColor(26, 42, 58);
   doc.rect(0, 0, 210, 25, 'F');
   doc.addImage(logo, 'PNG', 10, 2.5, 40, 20);
 
@@ -33,9 +33,9 @@ export function generarPDF(datos) {
   yPosition = 35;
 
   // TARJETA RESUMEN
-  doc.setFillColor(200, 200, 200);
+  doc.setFillColor(180, 190, 200);
   doc.roundedRect(15, yPosition + 1, 180, 36, 3, 3, 'F');
-  doc.setFillColor(240, 240, 240);
+  doc.setFillColor(244, 246, 248);
   doc.roundedRect(15, yPosition, 180, 36, 3, 3, 'F');
 
   doc.setTextColor(0, 0, 0);
@@ -83,8 +83,8 @@ export function generarPDF(datos) {
 
   // Interpolador de color para el degradado amarillo → marrón
   const interpolarColor = (paso, totalPasos) => {
-    const inicio = { r: 254, g: 212, b: 42 };
-    const fin = { r: 137, g: 107, b: 62 };
+    const inicio = { r: 36, g: 56, b: 77 };
+    const fin = { r: 74, g: 98, b: 122 };
     const ratio = paso / totalPasos;
     return {
       r: Math.round(inicio.r + (fin.r - inicio.r) * ratio),
@@ -95,11 +95,11 @@ export function generarPDF(datos) {
 
   const dibujarFooter = () => {
     const footerY = 285;
-    doc.setDrawColor(200, 200, 200);
+    doc.setDrawColor(214, 220, 227);
     doc.line(15, footerY, 195, footerY);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(100, 100, 100);
+    doc.setTextColor(107, 114, 128);
     const textoFooter = 'CHELSAN CARS - Informe generado automáticamente';
     const anchoTexto = doc.getTextWidth(textoFooter);
     doc.text(textoFooter, (210 - anchoTexto) / 2, footerY + 5);
@@ -135,11 +135,11 @@ export function generarPDF(datos) {
       doc.setFillColor(color.r, color.g, color.b);
       doc.rect(margenIzq, yPosition + i, anchoBox, 1, 'F');
     }
-    doc.setDrawColor(137, 107, 62);
+    doc.setDrawColor(74, 98, 122);
     doc.setLineWidth(0.3);
     doc.roundedRect(margenIzq, yPosition, anchoBox, alturaTitulo, radioTitulo, radioTitulo);
 
-    doc.setTextColor(20, 20, 20);
+    doc.setTextColor(255, 255, 255);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.text(titulo, margenIzq + anchoBox / 2, yPosition + alturaTitulo / 2 + 2, { align: 'center' });
@@ -197,9 +197,9 @@ export function generarPDF(datos) {
       yPosition += alturaBloqueLabel;
 
       if (item.observation && item.observation.trim()) {
-        doc.setFillColor(220, 220, 220);
+        doc.setFillColor(180, 190, 200);
         doc.roundedRect(margenIzq, yPosition + offsetSombra, anchoBox, alturaObservacion, radioBox, radioBox, 'F');
-        doc.setFillColor(245, 245, 245);
+        doc.setFillColor(244, 246, 248);
         doc.roundedRect(margenIzq, yPosition, anchoBox, alturaObservacion, radioBox, radioBox, 'F');
         doc.setFontSize(9);
         doc.setFont('helvetica', 'normal');
@@ -259,7 +259,7 @@ export function generarPDF(datos) {
   }
 
   yPosition += 20;
-  doc.setDrawColor(0, 0, 0);
+  doc.setDrawColor(26, 42, 58);
   doc.line(60, yPosition, 150, yPosition);
   yPosition += 10;
 
