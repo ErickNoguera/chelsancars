@@ -37,7 +37,7 @@ select {
 }
 
 section {
-  scroll-margin-top: 110px;
+  scroll-margin-top: 70px;
 }
 
 .app-container {
@@ -64,11 +64,11 @@ section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 80px;
+  height: 60px;
 }
 
 .navbar-logo img {
-  height: 70px;
+  height: 40px;
   width: auto;
   transition: transform 0.3s ease, filter 0.3s ease;
 }
