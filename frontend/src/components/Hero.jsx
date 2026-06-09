@@ -15,7 +15,7 @@ function Hero() {
             Evaluaciones completas con recomendaciones claras para que cada viaje sea seguro y tu
             inversión esté protegida.
           </p>
-          <a className="hero-button" href="#contacto">
+          <a className="hero-button" href="https://wa.me/56921759721">
             Solicitar inspección
           </a>
         </div>
